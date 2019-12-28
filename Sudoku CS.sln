@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku CS", "Sudoku CS\Sudoku CS.csproj", "{B55A2F8E-4E94-477E-822D-EA413B9A76ED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B55A2F8E-4E94-477E-822D-EA413B9A76ED}.Debug|x86.ActiveCfg = Debug|x86
+		{B55A2F8E-4E94-477E-822D-EA413B9A76ED}.Debug|x86.Build.0 = Debug|x86
+		{B55A2F8E-4E94-477E-822D-EA413B9A76ED}.Release|x86.ActiveCfg = Release|x86
+		{B55A2F8E-4E94-477E-822D-EA413B9A76ED}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {65297BE0-27AF-44D4-B46D-83DDFA6FB687}
+	EndGlobalSection
+EndGlobal
