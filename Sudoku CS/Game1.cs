@@ -12,10 +12,19 @@ namespace Sudoku_CS
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        Board board;
+
+        int screenWidth = 1200;
+        int screenHeight = 1000;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            graphics.PreferredBackBufferWidth = screenWidth;
+            graphics.PreferredBackBufferHeight = screenHeight;
+            this.Window.Title = "Sudoku";
+            this.IsMouseVisible = true;
         }
 
         /// <summary>
@@ -37,6 +46,8 @@ namespace Sudoku_CS
         /// </summary>
         protected override void LoadContent()
         {
+            board = new Board(Content);
+
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -59,9 +70,6 @@ namespace Sudoku_CS
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -73,9 +81,13 @@ namespace Sudoku_CS
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.White);
 
-            // TODO: Add your drawing code here
+            spriteBatch.Begin();
+
+            board.Draw(spriteBatch);
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
