@@ -45,6 +45,15 @@ namespace Sudoku_CS
 
 
 
+            //// temp reveal entire winning grid to test
+            //for (int i = 0; i < 9; i++)
+            //{
+            //    for (int j = 0; j < 9; j++)
+            //    {
+            //        blockGrid[i, j] = winningBlockGrid[i, j];
+            //    }
+            //}
+
 
             System.Diagnostics.Debug.WriteLine(blockGrid[5, 5]);
 
@@ -56,54 +65,97 @@ namespace Sudoku_CS
 
         public void NewWinningGrid()
         {
-            HashSet<int> randomNumbersRow = new HashSet<int>();
+            HashSet<int> randomNumbersRowSet = new HashSet<int>();
 
             for (int i = 1; i < 10; i++)
-                while (!randomNumbersRow.Add(r.Next(1, 10))) ;
+                while (!randomNumbersRowSet.Add(r.Next(1, 10))) ;
 
 
-            // WORKING HERE
-            int count = 0;
+            System.Diagnostics.Debug.WriteLine(randomNumbersRowSet.Count);
 
-            foreach (var item in randomNumbersRow)
+            int[] randomNumbersRow = new int[randomNumbersRowSet.Count];
+            randomNumbersRowSet.CopyTo(randomNumbersRow);
+
+
+
+            // temp
+            for (int i = 0; i < 9; i++)
             {
-                winningBlockGrid[count, 0] = item;
-                count += 1;
+                winningBlockGrid[i, 0] = randomNumbersRow[i];
+            }
+
+            randomNumbersRow = shiftBoardBy(randomNumbersRow, 3);
+
+            for (int i = 0; i < 9; i++)
+            {
+                winningBlockGrid[i, 1] = randomNumbersRow[i];
+            }
+
+            randomNumbersRow = shiftBoardBy(randomNumbersRow, 3);
+
+            for (int i = 0; i < 9; i++)
+            {
+                winningBlockGrid[i, 2] = randomNumbersRow[i];
             }
 
 
+            randomNumbersRow = shiftBoardBy(randomNumbersRow, 1);
+
+            for (int i = 0; i < 9; i++)
+            {
+                winningBlockGrid[i, 3] = randomNumbersRow[i];
+            }
+
+            randomNumbersRow = shiftBoardBy(randomNumbersRow, 3);
+
+            for (int i = 0; i < 9; i++)
+            {
+                winningBlockGrid[i, 4] = randomNumbersRow[i];
+            }
+
+            randomNumbersRow = shiftBoardBy(randomNumbersRow, 3);
+
+            for (int i = 0; i < 9; i++)
+            {
+                winningBlockGrid[i, 5] = randomNumbersRow[i];
+            }
 
 
+            randomNumbersRow = shiftBoardBy(randomNumbersRow, 1);
 
-            //foreach (var item in randomNumbers3)
-            //{
-            //    System.Diagnostics.Debug.WriteLine(item);
-            //}
+            for (int i = 0; i < 9; i++)
+            {
+                winningBlockGrid[i, 6] = randomNumbersRow[i];
+            }
+
+            randomNumbersRow = shiftBoardBy(randomNumbersRow, 3);
+
+            for (int i = 0; i < 9; i++)
+            {
+                winningBlockGrid[i, 7] = randomNumbersRow[i];
+            }
+
+            randomNumbersRow = shiftBoardBy(randomNumbersRow, 3);
+
+            for (int i = 0; i < 9; i++)
+            {
+                winningBlockGrid[i, 8] = randomNumbersRow[i];
+            }
+
+
             //System.Diagnostics.Debug.WriteLine(randomNumbers3);
-        
+        }
 
+        public int[] shiftBoardBy(int[] row, int shift)
+        {
+            int[] newRow = new int[9];
 
-
-
-
-
-
-            for (int i = 1; i < 10; i++)
+            for (int i = 0; i < 9; i++)
             {
-
-                //randomNumbers.Add(i, r.Next(0, 1000));
-                //System.Diagnostics.Debug.WriteLine(randomNumbers);
+                newRow[i] = row[(i + shift) % 9];
             }
 
-
-            //for (int i = 0; i < 9; i++)
-            //{
-            //    for(int j = 0; j < 9; j++)
-            //    {
-            //        // delete
-            //        winningBlockGrid[i, j] = 5;
-            //    }
-            //}
+            return newRow;
         }
 
         public void LoadContent()
