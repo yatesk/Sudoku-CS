@@ -13,10 +13,8 @@ namespace Sudoku_CS
         Random r = new Random();
 
         // Easy = 36+ blocks revealed. Medium = 27-36 blocks revealed. Hard = 19-26 blocks revealed.
-        public int[,] blockGrid = new int[9, 9];
-
-        public int[,] winningBlockGrid = new int[9, 9];
-
+        public List<int[]> blockGrid = new List<int[]>();
+        public List<int[]> winningBlockGrid = new List<int[]>();
 
         public Texture2D backgroundImage;
         public Vector2 backgroundPosition;
@@ -29,34 +27,27 @@ namespace Sudoku_CS
         {
             content = Content;
 
-            Array.Clear(blockGrid, 0, blockGrid.Length);
+            //Array.Clear(blockGrid, 0, blockGrid.Length);
+
+            for (int i = 0; i < 9; i++)
+            {
+                blockGrid.Add(new int[] { 0,0,0,0,0,0,0,0,0});
+            }
 
             NewWinningGrid();
 
             // 38 revealed
             // check for collisions
-            //for (int i = 0; i < blocksRevealed; i++)
-            //{
-            //    int x = r.Next(0, 9);
-            //    int y = r.Next(0, 9);
-
-            //    blockGrid[x, y] = winningBlockGrid[x, y];
-            //}
-
-
-
-            // temp reveal entire winning grid to test
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < blocksRevealed; i++)
             {
-                for (int j = 0; j < 9; j++)
-                {
-                    blockGrid[i, j] = winningBlockGrid[i, j];
-                }
+                int x = r.Next(0, 9);
+                int y = r.Next(0, 9);
+
+                blockGrid[x][y] = winningBlockGrid[x][y];
             }
 
-
-            System.Diagnostics.Debug.WriteLine(blockGrid[5, 5]);
-
+            // reveal entire winning grid to test
+            //blockGrid = new List<int[]>(winningBlockGrid);
 
             backgroundPosition = new Vector2(50, 50);
 
@@ -70,98 +61,45 @@ namespace Sudoku_CS
             for (int i = 1; i < 10; i++)
                 while (!randomNumbersRowSeed.Add(r.Next(1, 10))) ;
 
-
-            //System.Diagnostics.Debug.WriteLine(randomNumbersRowSet.Count);
-
             int[] randomNumbersRow = new int[randomNumbersRowSeed.Count];
             randomNumbersRowSeed.CopyTo(randomNumbersRow);
 
-
-
-
             winningBlockGrid = seedRowToWinningBoard(randomNumbersRow);
-
-
-            
 
 
             //System.Diagnostics.Debug.WriteLine(randomNumbers3);
         }
 
         // newest function
-        public int[,] seedRowToWinningBoard(int[] seedRow)
+        public List<int[]> seedRowToWinningBoard(int[] seedRow)
         {
-            int[,] winningBlockGrid = new int[9, 9];
+            List<int[]> winningBlockGrid = new List<int[]>();
 
-
-
-
-            for (int i = 0; i < 9; i++)
-            {
-                winningBlockGrid[i, 0] = seedRow[i];
-            }
+            winningBlockGrid.Add(seedRow);
 
             seedRow = shiftRowBy(seedRow, 3);
-
-            for (int i = 0; i < 9; i++)
-            {
-                winningBlockGrid[i, 1] = seedRow[i];
-            }
+            winningBlockGrid.Add(seedRow);
 
             seedRow = shiftRowBy(seedRow, 3);
-
-            for (int i = 0; i < 9; i++)
-            {
-                winningBlockGrid[i, 2] = seedRow[i];
-            }
-
+            winningBlockGrid.Add(seedRow);
 
             seedRow = shiftRowBy(seedRow, 1);
-
-            for (int i = 0; i < 9; i++)
-            {
-                winningBlockGrid[i, 3] = seedRow[i];
-            }
+            winningBlockGrid.Add(seedRow);
 
             seedRow = shiftRowBy(seedRow, 3);
-
-            for (int i = 0; i < 9; i++)
-            {
-                winningBlockGrid[i, 4] = seedRow[i];
-            }
+            winningBlockGrid.Add(seedRow);
 
             seedRow = shiftRowBy(seedRow, 3);
-
-            for (int i = 0; i < 9; i++)
-            {
-                winningBlockGrid[i, 5] = seedRow[i];
-            }
-
+            winningBlockGrid.Add(seedRow);
 
             seedRow = shiftRowBy(seedRow, 1);
-
-            for (int i = 0; i < 9; i++)
-            {
-                winningBlockGrid[i, 6] = seedRow[i];
-            }
+            winningBlockGrid.Add(seedRow);
 
             seedRow = shiftRowBy(seedRow, 3);
-
-            for (int i = 0; i < 9; i++)
-            {
-                winningBlockGrid[i, 7] = seedRow[i];
-            }
+            winningBlockGrid.Add(seedRow);
 
             seedRow = shiftRowBy(seedRow, 3);
-
-            for (int i = 0; i < 9; i++)
-            {
-                winningBlockGrid[i, 8] = seedRow[i];
-            }
-
-
-
-
+            winningBlockGrid.Add(seedRow);
 
             return winningBlockGrid;
         }
@@ -189,12 +127,11 @@ namespace Sudoku_CS
         {
             spriteBatch.Draw(backgroundImage, backgroundPosition);
 
-
-            for (int i = 0; i < blockGrid.GetLength(0); i++)
-                for (int j = 0; j < blockGrid.GetLength(1); j++)
-                    if (blockGrid[i,j] != 0)
+            for (int i = 0; i < 9; i++)
+                for (int j = 0; j < 9; j++)
+                    if (blockGrid[i][j] != 0)
                     {
-                        spriteBatch.DrawString(font, blockGrid[i, j].ToString(), new Vector2(50 + (i*100) + 25, 50 + (j*100) ), Color.Black);
+                        spriteBatch.DrawString(font, blockGrid[i][j].ToString(), new Vector2(50 + (i*100) + 25, 50 + (j*100) ), Color.Black);
                     }
         }
     }
