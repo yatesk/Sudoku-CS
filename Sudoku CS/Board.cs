@@ -13,10 +13,13 @@ namespace Sudoku_CS
         Random r = new Random();
 
         // Easy = 36+ blocks revealed. Medium = 27-36 blocks revealed. Hard = 19-26 blocks revealed.
-        public List<int[]> blockGrid = new List<int[]>();
+        public Block[,] grid = new Block[9, 9];
         public List<int[]> winningBlockGrid = new List<int[]>();
 
         public Texture2D backgroundImage;
+        public Texture2D selectedBlockImage;
+        public Texture2D revealedBlockImage;
+
         public Vector2 backgroundPosition;
 
         SpriteFont font;
@@ -29,9 +32,13 @@ namespace Sudoku_CS
 
             //Array.Clear(blockGrid, 0, blockGrid.Length);
 
+            // Fill blockGrid
             for (int i = 0; i < 9; i++)
             {
-                blockGrid.Add(new int[] { 0,0,0,0,0,0,0,0,0});
+                for (int j = 0; j < 9; j++)
+                {
+                    grid[i,j] = new Block(new Vector2(0,0), Block.BlockBackground.White, 0);
+                }
             }
 
             NewWinningGrid();
@@ -43,7 +50,7 @@ namespace Sudoku_CS
                 int x = r.Next(0, 9);
                 int y = r.Next(0, 9);
 
-                blockGrid[x][y] = winningBlockGrid[x][y];
+                grid[x, y].number = winningBlockGrid[x][y];
             }
 
             // reveal entire winning grid to test
@@ -66,11 +73,10 @@ namespace Sudoku_CS
 
             winningBlockGrid = seedRowToWinningBoard(randomNumbersRow);
 
-
             //System.Diagnostics.Debug.WriteLine(randomNumbers3);
         }
 
-        // newest function
+        
         public List<int[]> seedRowToWinningBoard(int[] seedRow)
         {
             List<int[]> winningBlockGrid = new List<int[]>();
@@ -127,11 +133,17 @@ namespace Sudoku_CS
         {
             spriteBatch.Draw(backgroundImage, backgroundPosition);
 
+            /////////////
+            /////////////////
+            ///
+
+
+
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
-                    if (blockGrid[i][j] != 0)
+                    if (grid[i,j].number != 0)
                     {
-                        spriteBatch.DrawString(font, blockGrid[i][j].ToString(), new Vector2(50 + (i*100) + 25, 50 + (j*100) ), Color.Black);
+                        spriteBatch.DrawString(font, grid[i,j].number.ToString(), new Vector2(50 + (i*100) + 25, 50 + (j*100) ), Color.Black);
                     }
         }
     }
