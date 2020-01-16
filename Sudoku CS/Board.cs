@@ -17,12 +17,8 @@ namespace Sudoku_CS
         public List<int[]> winningBlockGrid = new List<int[]>();
 
         public Texture2D backgroundImage;
-        public Texture2D selectedBlockImage;
-        public Texture2D revealedBlockImage;
 
         public Vector2 backgroundPosition;
-
-        SpriteFont font;
 
         int blocksRevealed = 38;
 
@@ -37,7 +33,7 @@ namespace Sudoku_CS
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    grid[i,j] = new Block(new Vector2(0,0), Block.BlockBackground.White, 0);
+                    grid[i,j] = new Block(new Vector2(50 + (i * 100) + 25, 50 + (j * 100)), Block.BlockBackground.White, 0);
                 }
             }
 
@@ -51,6 +47,7 @@ namespace Sudoku_CS
                 int y = r.Next(0, 9);
 
                 grid[x, y].number = winningBlockGrid[x][y];
+                grid[x, y].background = Block.BlockBackground.Revealed;
             }
 
             // reveal entire winning grid to test
@@ -126,24 +123,21 @@ namespace Sudoku_CS
         {
             backgroundImage = content.Load<Texture2D>("background");
 
-            font = content.Load<SpriteFont>("Font");
+            Block.selectedBlockImage = content.Load<Texture2D>("selectedBlock");
+            Block.revealedBlockImage = content.Load<Texture2D>("revealedBlock");
+
+            Block.font = content.Load<SpriteFont>("Font");
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(backgroundImage, backgroundPosition);
 
-            /////////////
-            /////////////////
-            ///
-
-
-
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
                     if (grid[i,j].number != 0)
                     {
-                        spriteBatch.DrawString(font, grid[i,j].number.ToString(), new Vector2(50 + (i*100) + 25, 50 + (j*100) ), Color.Black);
+                        grid[i, j].Draw(spriteBatch);
                     }
         }
     }
