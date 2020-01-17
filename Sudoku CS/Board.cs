@@ -22,9 +22,12 @@ namespace Sudoku_CS
 
         int blocksRevealed = 38;
 
+        public bool blockSelected = false;
+
         public Board(ContentManager Content)
         {
             content = Content;
+            backgroundPosition = new Vector2(50, 50);
 
             //Array.Clear(blockGrid, 0, blockGrid.Length);
 
@@ -33,9 +36,40 @@ namespace Sudoku_CS
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    grid[i,j] = new Block(new Vector2(50 + (i * 100) + 25, 50 + (j * 100)), Block.BlockBackground.White, 0);
+                    int gridMarginX = 0;
+                    int gridMarginY = 0;
+
+                    // better way?
+                    if (i < 3)
+                    {
+                        gridMarginX = 2 * i;
+                    }
+                    else if (i < 6)
+                    {
+                        gridMarginX = (2 * i) + 4;
+                    }
+                    else if (i < 9)
+                    {
+                        gridMarginX = (2 * i) + 8;
+                    }
+
+
+                    if (j < 3)
+                    {
+                        gridMarginY = 2 * j;
+                    }
+                    else if (j < 6)
+                    {
+                        gridMarginY = (2 * j) + 4;
+                    }
+                    else if (j < 9)
+                    {
+                        gridMarginY = (2 * j) + 8;
+                    }
+
+                    grid[i,j] = new Block(new Vector2((i * 96) + 56 + gridMarginX, 56+(j * 96) + gridMarginY), Block.BlockBackground.None, 0);
                 }
-            }
+            } 
 
             NewWinningGrid();
 
@@ -53,7 +87,7 @@ namespace Sudoku_CS
             // reveal entire winning grid to test
             //blockGrid = new List<int[]>(winningBlockGrid);
 
-            backgroundPosition = new Vector2(50, 50);
+            
 
             LoadContent();
         }
@@ -135,10 +169,7 @@ namespace Sudoku_CS
 
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
-                    if (grid[i,j].number != 0)
-                    {
-                        grid[i, j].Draw(spriteBatch);
-                    }
+                    grid[i, j].Draw(spriteBatch);        
         }
     }
 }

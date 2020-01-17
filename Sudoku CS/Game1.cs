@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace Sudoku_CS
 {
@@ -13,6 +14,9 @@ namespace Sudoku_CS
         SpriteBatch spriteBatch;
 
         Board board;
+
+        MouseState lastMouseState;
+        MouseState currentMouseState;
 
         int screenWidth = 1200;
         int screenHeight = 1000;
@@ -70,7 +74,31 @@ namespace Sudoku_CS
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // TODO: Add your update logic here
+            lastMouseState = currentMouseState;
+            currentMouseState = Mouse.GetState();
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit();
+
+            if (currentMouseState.LeftButton == ButtonState.Pressed && lastMouseState.LeftButton == ButtonState.Released)
+            {
+                //System.Diagnostics.Debug.WriteLine("X = " + currentMouseState.X + '\n' + "Y = " + currentMouseState.Y + '\n');
+                //System.Diagnostics.Debug.WriteLine(Block.WhichBlock(currentMouseState.X, currentMouseState.Y));
+
+                Tuple<int, int> selectedBlock = Block.WhichBlock(currentMouseState.X, currentMouseState.Y);
+                Block.BlockBackground selectedBlockBackground = board.grid[selectedBlock.Item1, selectedBlock.Item2].background;
+
+                if (selectedBlockBackground == Block.BlockBackground.None && board.blockSelected == false)
+                {
+                    board.grid[selectedBlock.Item1, selectedBlock.Item2].background = Block.BlockBackground.Selected;
+                    board.blockSelected = true;
+                }
+                else if (selectedBlockBackground == Block.BlockBackground.Selected)
+                {
+                    board.grid[selectedBlock.Item1, selectedBlock.Item2].background = Block.BlockBackground.None;
+                    board.blockSelected = false;
+                }
+            }
 
             base.Update(gameTime);
         }

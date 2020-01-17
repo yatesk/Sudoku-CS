@@ -16,7 +16,7 @@ namespace Sudoku_CS
 
         public int number;
 
-        public enum BlockBackground { Revealed, Selected, White };
+        public enum BlockBackground { None, Revealed, Selected };
 
         public BlockBackground background;
         public Vector2 position;
@@ -38,7 +38,33 @@ namespace Sudoku_CS
                 spriteBatch.Draw(revealedBlockImage, position);
             }
 
-            spriteBatch.DrawString(font, number.ToString(), position, Color.Black);
+            else if (background == BlockBackground.Selected)
+            {
+                spriteBatch.Draw(selectedBlockImage, position);
+            }
+
+            if (number != 0)
+            {
+                // Kind of centered.
+                spriteBatch.DrawString(font, number.ToString(), new Vector2(position.X + 25, position.Y + 10), Color.Black);
+            }
+        }
+
+
+        public static Tuple<int, int> WhichBlock(int _x, int _y)
+        {
+            int x = _x;
+            int y = _y;
+
+            // margin
+            x -= 56;
+            y -= 56;
+
+            // bugs
+            x /= 96;
+            y /= 96;
+
+            return new Tuple<int, int>(x, y);
         }
     }
 }
