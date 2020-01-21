@@ -25,12 +25,19 @@
 /processorParam:TextureFormat=Color
 /build:background.png
 
-#begin font.spritefont
+#begin canidateFont.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:font.spritefont
+/build:canidateFont.spritefont
+
+#begin numberFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:numberFont.spritefont
 
 #begin revealedBlock.png
 /importer:TextureImporter

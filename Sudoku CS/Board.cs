@@ -87,8 +87,6 @@ namespace Sudoku_CS
             // reveal entire winning grid to test
             //blockGrid = new List<int[]>(winningBlockGrid);
 
-            
-
             LoadContent();
         }
 
@@ -160,7 +158,8 @@ namespace Sudoku_CS
             Block.selectedBlockImage = content.Load<Texture2D>("selectedBlock");
             Block.revealedBlockImage = content.Load<Texture2D>("revealedBlock");
 
-            Block.font = content.Load<SpriteFont>("Font");
+            Block.numberFont = content.Load<SpriteFont>("numberFont");
+            Block.candidateFont = content.Load<SpriteFont>("canidateFont");
         }
 
         public void Draw(SpriteBatch spriteBatch)
