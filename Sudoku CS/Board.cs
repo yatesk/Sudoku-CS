@@ -74,14 +74,19 @@ namespace Sudoku_CS
             NewWinningGrid();
 
             // 38 revealed
-            // check for collisions
-            for (int i = 0; i < blocksRevealed; i++)
+            int counter = 0;
+
+            while (counter < blocksRevealed)
             {
                 int x = r.Next(0, 9);
                 int y = r.Next(0, 9);
 
-                grid[x, y].number = winningBlockGrid[x][y];
-                grid[x, y].background = Block.BlockBackground.Revealed;
+                if (grid[x, y].background != Block.BlockBackground.Revealed)
+                {
+                    grid[x, y].number = winningBlockGrid[x][y];
+                    grid[x, y].background = Block.BlockBackground.Revealed;
+                    counter++;
+                }
             }
 
             // reveal entire winning grid to test
@@ -253,7 +258,6 @@ namespace Sudoku_CS
         private int[] findSubGrid(int x, int y)
         {
             int[] subGridStartingCoords = new int[2];
-
 
             if (x == 0 || x == 1 || x == 2)
                 subGridStartingCoords[0] = 0; 

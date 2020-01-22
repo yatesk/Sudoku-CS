@@ -96,6 +96,7 @@ namespace Sudoku_CS
                 if (currentSelectedBlock.Item1 != -1)
                 {
                     Block.BlockBackground selectedBlockBackground = board.grid[currentSelectedBlock.Item1, currentSelectedBlock.Item2].background;
+                    //Block selectedBlock = board.grid[currentSelectedBlock.Item1, currentSelectedBlock.Item2];
 
                     if (selectedBlockBackground == Block.BlockBackground.None)
                     {
