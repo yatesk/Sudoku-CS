@@ -13,7 +13,11 @@ namespace Sudoku_CS
         static public Texture2D selectedBlockImage;
         static public Texture2D revealedBlockImage;
 
+        static public Texture2D invalidNumberImage;
+
         public int number;
+        public bool invalidNumber;
+
         public List<int> candidates = new List<int>();
 
         public enum BlockBackground { None, Revealed, Selected };
@@ -24,8 +28,8 @@ namespace Sudoku_CS
         public static int size = 96;
 
         // better way?  Used to determine which grid block is clicked.
-        public static int[] xGridCoords = new int[] {56, 154, 252, 353, 452, 550, 652, 750, 849, 944}; // check
-        public static int[] yGridCoords = new int[] {56, 154, 252, 353, 452, 550, 652, 750, 849, 944}; // check
+        public static int[] xGridCoords = new int[] {56, 154, 252, 354, 452, 550, 652, 750, 848, 944}; 
+        public static int[] yGridCoords = new int[] {56, 154, 252, 354, 452, 550, 652, 750, 848, 944}; 
 
         // int[] array1 = new int[] { 1, 3, 5, 7, 9 };
         public Block(Vector2 _position, BlockBackground _background, int _number = 0)
@@ -33,6 +37,7 @@ namespace Sudoku_CS
             position = _position;
             background = _background;
             number = _number;
+            invalidNumber = false;
         }
 
         // Draw Text Number, canadidate numbers, and background color.
@@ -52,6 +57,11 @@ namespace Sudoku_CS
             {
                 // Kind of centered.
                 spriteBatch.DrawString(numberFont, number.ToString(), new Vector2(position.X + 25, position.Y + 10), Color.Black);
+
+                if (invalidNumber)
+                {
+                    spriteBatch.Draw(invalidNumberImage, new Vector2(position.X + size - 24, position.Y + size - 24));
+                }
             }
             else
             {
@@ -177,7 +187,7 @@ namespace Sudoku_CS
                 }
             }
 
-            System.Diagnostics.Debug.WriteLine(relativeX + " " + relativeY);
+            //System.Diagnostics.Debug.WriteLine(relativeX + " " + relativeY);
         }
 
         public static Tuple<int, int> WhichBlock(int _x, int _y)

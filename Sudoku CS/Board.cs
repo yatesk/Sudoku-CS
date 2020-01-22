@@ -67,9 +67,9 @@ namespace Sudoku_CS
                         gridMarginY = (2 * j) + 8;
                     }
 
-                    grid[i,j] = new Block(new Vector2((i * 96) + 56 + gridMarginX, 56+(j * 96) + gridMarginY), Block.BlockBackground.None, 0);
+                    grid[i, j] = new Block(new Vector2((i * 96) + 56 + gridMarginX, 56 + (j * 96) + gridMarginY), Block.BlockBackground.None, 0);
                 }
-            } 
+            }
 
             NewWinningGrid();
 
@@ -105,7 +105,6 @@ namespace Sudoku_CS
             //System.Diagnostics.Debug.WriteLine(randomNumbers3);
         }
 
-        
         public List<int[]> seedRowToWinningBoard(int[] seedRow)
         {
             List<int[]> winningBlockGrid = new List<int[]>();
@@ -158,8 +157,11 @@ namespace Sudoku_CS
             Block.selectedBlockImage = content.Load<Texture2D>("selectedBlock");
             Block.revealedBlockImage = content.Load<Texture2D>("revealedBlock");
 
+            Block.invalidNumberImage = content.Load<Texture2D>("invalidNumber");
+
             Block.numberFont = content.Load<SpriteFont>("numberFont");
             Block.candidateFont = content.Load<SpriteFont>("canidateFont");
+
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -168,7 +170,106 @@ namespace Sudoku_CS
 
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
-                    grid[i, j].Draw(spriteBatch);        
+                    grid[i, j].Draw(spriteBatch);
+        }
+
+        public void CheckForInvalidNumber(int _x, int _y)
+        {
+            // refactor
+            // check horizontal
+            int count = 0;
+
+            for (int i = 0; i < 9; i++)
+            {
+                if (grid[i, _y].number == grid[_x, _y].number)
+                {
+                    count++;
+                }
+            }
+
+            if (count > 1)
+            {
+                grid[_x, _y].invalidNumber = true;
+                return;
+            }
+            else
+            {
+                grid[_x, _y].invalidNumber = false;
+            }
+
+
+            // check vertical
+            count = 0;
+
+            for (int i = 0; i < 9; i++)
+            {
+                if (grid[_x, i].number == grid[_x, _y].number)
+                {
+                    count++;
+                }
+            }
+
+            if (count > 1)
+            {
+                grid[_x, _y].invalidNumber = true;
+                return;
+            }
+            else
+            {
+                grid[_x, _y].invalidNumber = false;
+            }
+
+
+            // check subGrid
+            int[] subGridStartingCoords = new int[2];  // {x, y]
+
+            subGridStartingCoords = findSubGrid(_x, _y);
+
+
+            count = 0;
+
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (grid[i + subGridStartingCoords[0], j + subGridStartingCoords[1]].number == grid[_x, _y].number)
+                    {
+                        count++;
+                    }
+                }
+            }
+
+            if (count > 1)
+            {
+                grid[_x, _y].invalidNumber = true;
+            }
+            else
+            {
+                grid[_x, _y].invalidNumber = false;
+            }
+        }
+
+        // refactor
+        private int[] findSubGrid(int x, int y)
+        {
+            int[] subGridStartingCoords = new int[2];
+
+
+            if (x == 0 || x == 1 || x == 2)
+                subGridStartingCoords[0] = 0; 
+            else if (x == 3 || x == 4 || x == 5)
+                subGridStartingCoords[0] = 3;
+            else if (x == 6 || x == 7 || x == 8)
+                subGridStartingCoords[0] = 6;
+
+            if (y == 0 || y == 1 || y == 2)
+                subGridStartingCoords[1] = 0;
+            else if (y == 3 || y == 4 || y == 5)
+                subGridStartingCoords[1] = 3;
+            else if (y == 6 || y == 7 || y == 8)
+                subGridStartingCoords[1] = 6;
+
+            return subGridStartingCoords;
         }
     }
 }

@@ -117,52 +117,63 @@ namespace Sudoku_CS
             if (currentKeyboardState.IsKeyDown(Keys.NumPad1) && lastKeyboardState.IsKeyUp(Keys.NumPad1) && board.grid[currentSelectedBlock.Item1, currentSelectedBlock.Item2].background == Block.BlockBackground.Selected)
             {
                 board.grid[currentSelectedBlock.Item1, currentSelectedBlock.Item2].number = 1;
+                board.CheckForInvalidNumber(currentSelectedBlock.Item1, currentSelectedBlock.Item2);
             }
 
             if (currentKeyboardState.IsKeyDown(Keys.NumPad2) && lastKeyboardState.IsKeyUp(Keys.NumPad2) && board.grid[currentSelectedBlock.Item1, currentSelectedBlock.Item2].background == Block.BlockBackground.Selected)
             {
                 board.grid[currentSelectedBlock.Item1, currentSelectedBlock.Item2].number = 2;
+                board.CheckForInvalidNumber(currentSelectedBlock.Item1, currentSelectedBlock.Item2);
             }
 
             if (currentKeyboardState.IsKeyDown(Keys.NumPad3) && lastKeyboardState.IsKeyUp(Keys.NumPad3) && board.grid[currentSelectedBlock.Item1, currentSelectedBlock.Item2].background == Block.BlockBackground.Selected)
             {
                 board.grid[currentSelectedBlock.Item1, currentSelectedBlock.Item2].number = 3;
+                board.CheckForInvalidNumber(currentSelectedBlock.Item1, currentSelectedBlock.Item2);
             }
 
             if (currentKeyboardState.IsKeyDown(Keys.NumPad4) && lastKeyboardState.IsKeyUp(Keys.NumPad4) && board.grid[currentSelectedBlock.Item1, currentSelectedBlock.Item2].background == Block.BlockBackground.Selected)
             {
                 board.grid[currentSelectedBlock.Item1, currentSelectedBlock.Item2].number = 4;
+                board.CheckForInvalidNumber(currentSelectedBlock.Item1, currentSelectedBlock.Item2);
             }
 
             if (currentKeyboardState.IsKeyDown(Keys.NumPad5) && lastKeyboardState.IsKeyUp(Keys.NumPad5) && board.grid[currentSelectedBlock.Item1, currentSelectedBlock.Item2].background == Block.BlockBackground.Selected)
             {
                 board.grid[currentSelectedBlock.Item1, currentSelectedBlock.Item2].number = 5;
+                board.CheckForInvalidNumber(currentSelectedBlock.Item1, currentSelectedBlock.Item2);
             }
 
             if (currentKeyboardState.IsKeyDown(Keys.NumPad6) && lastKeyboardState.IsKeyUp(Keys.NumPad6) && board.grid[currentSelectedBlock.Item1, currentSelectedBlock.Item2].background == Block.BlockBackground.Selected)
             {
                 board.grid[currentSelectedBlock.Item1, currentSelectedBlock.Item2].number = 6;
+                board.CheckForInvalidNumber(currentSelectedBlock.Item1, currentSelectedBlock.Item2);
             }
 
             if (currentKeyboardState.IsKeyDown(Keys.NumPad7) && lastKeyboardState.IsKeyUp(Keys.NumPad7) && board.grid[currentSelectedBlock.Item1, currentSelectedBlock.Item2].background == Block.BlockBackground.Selected)
             {
                 board.grid[currentSelectedBlock.Item1, currentSelectedBlock.Item2].number = 7;
+                board.CheckForInvalidNumber(currentSelectedBlock.Item1, currentSelectedBlock.Item2);
             }
 
             if (currentKeyboardState.IsKeyDown(Keys.NumPad8) && lastKeyboardState.IsKeyUp(Keys.NumPad8) && board.grid[currentSelectedBlock.Item1, currentSelectedBlock.Item2].background == Block.BlockBackground.Selected)
             {
                 board.grid[currentSelectedBlock.Item1, currentSelectedBlock.Item2].number = 8;
+                board.CheckForInvalidNumber(currentSelectedBlock.Item1, currentSelectedBlock.Item2);
             }
 
             if (currentKeyboardState.IsKeyDown(Keys.NumPad9) && lastKeyboardState.IsKeyUp(Keys.NumPad9) && board.grid[currentSelectedBlock.Item1, currentSelectedBlock.Item2].background == Block.BlockBackground.Selected)
             {
                 board.grid[currentSelectedBlock.Item1, currentSelectedBlock.Item2].number = 9;
+                board.CheckForInvalidNumber(currentSelectedBlock.Item1, currentSelectedBlock.Item2);
             }
 
             if (currentKeyboardState.IsKeyDown(Keys.Decimal) && lastKeyboardState.IsKeyUp(Keys.Decimal) && board.grid[currentSelectedBlock.Item1, currentSelectedBlock.Item2].background == Block.BlockBackground.Selected)
             {
                 board.grid[currentSelectedBlock.Item1, currentSelectedBlock.Item2].number = 0;
             }
+                
+            
 
             base.Update(gameTime);
         }
