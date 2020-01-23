@@ -13,16 +13,17 @@ namespace Sudoku_CS
         Random r = new Random();
 
         // Easy = 36+ blocks revealed. Medium = 27-36 blocks revealed. Hard = 19-26 blocks revealed.
+        int blocksRevealed = 75;
+        public int blocksEntered = 75;
         public Block[,] grid = new Block[9, 9];
         public List<int[]> winningBlockGrid = new List<int[]>();
 
         public Texture2D backgroundImage;
-
         public Vector2 backgroundPosition;
 
-        int blocksRevealed = 38;
-
         public bool blockSelected = false;
+
+        public float timer = 0f;
 
         public Board(ContentManager Content)
         {
@@ -169,13 +170,38 @@ namespace Sudoku_CS
 
         }
 
+        public void Update(GameTime gameTime)
+        {
+            timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(backgroundImage, backgroundPosition);
 
+            // Draw grid
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
                     grid[i, j].Draw(spriteBatch);
+
+            // Draw timer
+            // refactor
+            int time = (int)timer;
+            
+            if (time % 60 < 10)
+            {
+                spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":0" + (time % 60).ToString(), new Vector2(500, 0), Color.Black);
+            }
+            else
+            {
+                spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":" + (time % 60).ToString(), new Vector2(500, 0), Color.Black);
+            }
+            
+        }
+
+        public void NewGame()
+        {
+            timer = 0f;
         }
 
         public void CheckForInvalidNumber(int _x, int _y)
