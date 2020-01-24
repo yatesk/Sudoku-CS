@@ -13,17 +13,23 @@ namespace Sudoku_CS
         Random r = new Random();
 
         // Easy = 36+ blocks revealed. Medium = 27-36 blocks revealed. Hard = 19-26 blocks revealed.
-        int blocksRevealed = 75;
-        public int blocksEntered = 75;
+        // Easy = 38. Medium = 30. Hard = 24
+        public enum Difficulty { Easy = 38, Medium = 30, Hard = 24 };
+
+        int blocksRevealed = (int)Difficulty.Easy;
+        public int blocksEntered = (int)Difficulty.Easy;
         public Block[,] grid = new Block[9, 9];
         public List<int[]> winningBlockGrid = new List<int[]>();
 
         public Texture2D backgroundImage;
         public Vector2 backgroundPosition;
 
+        public Texture2D pauseImage;
+
         public bool blockSelected = false;
 
         public float timer = 0f;
+        public bool isPaused = false;
 
         public Board(ContentManager Content)
         {
@@ -53,7 +59,6 @@ namespace Sudoku_CS
                     {
                         gridMarginX = (2 * i) + 8;
                     }
-
 
                     if (j < 3)
                     {
@@ -160,6 +165,8 @@ namespace Sudoku_CS
         {
             backgroundImage = content.Load<Texture2D>("background");
 
+            pauseImage = content.Load<Texture2D>("pause");
+
             Block.selectedBlockImage = content.Load<Texture2D>("selectedBlock");
             Block.revealedBlockImage = content.Load<Texture2D>("revealedBlock");
 
@@ -167,7 +174,6 @@ namespace Sudoku_CS
 
             Block.numberFont = content.Load<SpriteFont>("numberFont");
             Block.candidateFont = content.Load<SpriteFont>("canidateFont");
-
         }
 
         public void Update(GameTime gameTime)
@@ -196,6 +202,8 @@ namespace Sudoku_CS
             {
                 spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":" + (time % 60).ToString(), new Vector2(500, 0), Color.Black);
             }
+            
+            spriteBatch.Draw(pauseImage, new Vector2(550, 4));
             
         }
 
@@ -228,7 +236,6 @@ namespace Sudoku_CS
                 grid[_x, _y].invalidNumber = false;
             }
 
-
             // check vertical
             count = 0;
 
@@ -255,7 +262,6 @@ namespace Sudoku_CS
             int[] subGridStartingCoords = new int[2];  // {x, y]
 
             subGridStartingCoords = findSubGrid(_x, _y);
-
 
             count = 0;
 

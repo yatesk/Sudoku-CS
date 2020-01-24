@@ -45,8 +45,6 @@ namespace Sudoku_CS
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
         }
 
@@ -88,16 +86,20 @@ namespace Sudoku_CS
 
             if (currentMState.LeftButton == ButtonState.Pressed && lastMState.LeftButton == ButtonState.Released)
             {
-                //System.Diagnostics.Debug.WriteLine("X = " + currentMouseState.X + '\n' + "Y = " + currentMouseState.Y + '\n');
                 //System.Diagnostics.Debug.WriteLine(currentMouseState.X + " " + currentMouseState.Y);
-   
+
+                if (currentMState.X >= 550 && currentMState.X <= 566 && currentMState.Y >= 4 && currentMState.Y <= 20)
+                    if (board.isPaused)
+                        board.isPaused = false;
+                    else
+                        board.isPaused = true;
+
                 currentBlock = Block.WhichBlock(currentMState.X, currentMState.Y);
 
                 if (currentBlock.Item1 != -1)
                 {
                     Block.BlockBackground selectedBlockBackground = board.grid[currentBlock.Item1, currentBlock.Item2].background;
                     
-
                     if (selectedBlockBackground == Block.BlockBackground.None)
                     {
                         if (lastBlock.Item1 != -1)  
@@ -115,101 +117,98 @@ namespace Sudoku_CS
                 }
             }
 
-            if ((currentKState.IsKeyDown(Keys.NumPad1) && lastKState.IsKeyUp(Keys.NumPad1)) || (currentKState.IsKeyDown(Keys.D1) && lastKState.IsKeyUp(Keys.D1)) && board.grid[currentBlock.Item1, currentBlock.Item2].background == Block.BlockBackground.Selected)
+            System.Diagnostics.Debug.WriteLine(currentBlock);
+
+            // Keyboard Input   currentBlock is (-1, -1) if mouse click was out of bounds.
+            // refactor to replace tuple (x, y) to int block id 0-80 or 1-81
+            if (currentBlock.Item1 != -1 && board.grid[currentBlock.Item1, currentBlock.Item2].background == Block.BlockBackground.Selected)
             {
-                if (board.grid[currentBlock.Item1, currentBlock.Item2].number == 0)
+                if ((currentKState.IsKeyDown(Keys.NumPad1) && lastKState.IsKeyUp(Keys.NumPad1)) || (currentKState.IsKeyDown(Keys.D1) && lastKState.IsKeyUp(Keys.D1)))
                 {
-                    board.blocksEntered++;
+                    if (board.grid[currentBlock.Item1, currentBlock.Item2].number == 0)
+                        board.blocksEntered++;
+
                     board.grid[currentBlock.Item1, currentBlock.Item2].number = 1;
                     board.CheckForInvalidNumber(currentBlock.Item1, currentBlock.Item2);
                 }
-            }
 
-            if (currentKState.IsKeyDown(Keys.NumPad2) && lastKState.IsKeyUp(Keys.NumPad2) || (currentKState.IsKeyDown(Keys.D2) && lastKState.IsKeyUp(Keys.D2)) && board.grid[currentBlock.Item1, currentBlock.Item2].background == Block.BlockBackground.Selected)
-            {
-                if (board.grid[currentBlock.Item1, currentBlock.Item2].number == 0)
+                if (currentKState.IsKeyDown(Keys.NumPad2) && lastKState.IsKeyUp(Keys.NumPad2) || (currentKState.IsKeyDown(Keys.D2) && lastKState.IsKeyUp(Keys.D2)))
                 {
-                    board.blocksEntered++;
+                    if (board.grid[currentBlock.Item1, currentBlock.Item2].number == 0)
+                        board.blocksEntered++;
+
                     board.grid[currentBlock.Item1, currentBlock.Item2].number = 2;
                     board.CheckForInvalidNumber(currentBlock.Item1, currentBlock.Item2);
                 }
-            }
 
-            if (currentKState.IsKeyDown(Keys.NumPad3) && lastKState.IsKeyUp(Keys.NumPad3) || (currentKState.IsKeyDown(Keys.D3) && lastKState.IsKeyUp(Keys.D3)) && board.grid[currentBlock.Item1, currentBlock.Item2].background == Block.BlockBackground.Selected)
-            {
-                if (board.grid[currentBlock.Item1, currentBlock.Item2].number == 0)
+                if (currentKState.IsKeyDown(Keys.NumPad3) && lastKState.IsKeyUp(Keys.NumPad3) || (currentKState.IsKeyDown(Keys.D3) && lastKState.IsKeyUp(Keys.D3)))
                 {
-                    board.blocksEntered++;
+                    if (board.grid[currentBlock.Item1, currentBlock.Item2].number == 0)
+                        board.blocksEntered++;
+
                     board.grid[currentBlock.Item1, currentBlock.Item2].number = 3;
                     board.CheckForInvalidNumber(currentBlock.Item1, currentBlock.Item2);
-                 }
-            }
+                }
 
-            if (currentKState.IsKeyDown(Keys.NumPad4) && lastKState.IsKeyUp(Keys.NumPad4) || (currentKState.IsKeyDown(Keys.D4) && lastKState.IsKeyUp(Keys.D4)) && board.grid[currentBlock.Item1, currentBlock.Item2].background == Block.BlockBackground.Selected)
-            {
-                if (board.grid[currentBlock.Item1, currentBlock.Item2].number == 0)
+                if (currentKState.IsKeyDown(Keys.NumPad4) && lastKState.IsKeyUp(Keys.NumPad4) || (currentKState.IsKeyDown(Keys.D4) && lastKState.IsKeyUp(Keys.D4)))
                 {
-                    board.blocksEntered++;
+                    if (board.grid[currentBlock.Item1, currentBlock.Item2].number == 0)
+                        board.blocksEntered++;
+
                     board.grid[currentBlock.Item1, currentBlock.Item2].number = 4;
                     board.CheckForInvalidNumber(currentBlock.Item1, currentBlock.Item2);
                 }
-            }
 
-            if (currentKState.IsKeyDown(Keys.NumPad5) && lastKState.IsKeyUp(Keys.NumPad5) || (currentKState.IsKeyDown(Keys.D5) && lastKState.IsKeyUp(Keys.D5)) && board.grid[currentBlock.Item1, currentBlock.Item2].background == Block.BlockBackground.Selected)
-            {
-                if (board.grid[currentBlock.Item1, currentBlock.Item2].number == 0)
+                if (currentKState.IsKeyDown(Keys.NumPad5) && lastKState.IsKeyUp(Keys.NumPad5) || (currentKState.IsKeyDown(Keys.D5) && lastKState.IsKeyUp(Keys.D5)))
                 {
-                    board.blocksEntered++;
+                    if (board.grid[currentBlock.Item1, currentBlock.Item2].number == 0)
+                        board.blocksEntered++;
+
                     board.grid[currentBlock.Item1, currentBlock.Item2].number = 5;
                     board.CheckForInvalidNumber(currentBlock.Item1, currentBlock.Item2);
                 }
-            }
 
-            if (currentKState.IsKeyDown(Keys.NumPad6) && lastKState.IsKeyUp(Keys.NumPad6) || (currentKState.IsKeyDown(Keys.D6) && lastKState.IsKeyUp(Keys.D6)) && board.grid[currentBlock.Item1, currentBlock.Item2].background == Block.BlockBackground.Selected)
-            {
-                if (board.grid[currentBlock.Item1, currentBlock.Item2].number == 0)
+                if (currentKState.IsKeyDown(Keys.NumPad6) && lastKState.IsKeyUp(Keys.NumPad6) || (currentKState.IsKeyDown(Keys.D6) && lastKState.IsKeyUp(Keys.D6)))
                 {
-                    board.blocksEntered++;
+                    if (board.grid[currentBlock.Item1, currentBlock.Item2].number == 0)
+                        board.blocksEntered++;
+
                     board.grid[currentBlock.Item1, currentBlock.Item2].number = 6;
                     board.CheckForInvalidNumber(currentBlock.Item1, currentBlock.Item2);
                 }
-            }
 
-            if (currentKState.IsKeyDown(Keys.NumPad7) && lastKState.IsKeyUp(Keys.NumPad7) || (currentKState.IsKeyDown(Keys.D7) && lastKState.IsKeyUp(Keys.D7)) && board.grid[currentBlock.Item1, currentBlock.Item2].background == Block.BlockBackground.Selected)
-            {
-                if (board.grid[currentBlock.Item1, currentBlock.Item2].number == 0)
+                if (currentKState.IsKeyDown(Keys.NumPad7) && lastKState.IsKeyUp(Keys.NumPad7) || (currentKState.IsKeyDown(Keys.D7) && lastKState.IsKeyUp(Keys.D7)))
                 {
-                    board.blocksEntered++;
+                    if (board.grid[currentBlock.Item1, currentBlock.Item2].number == 0)
+                        board.blocksEntered++;
+
                     board.grid[currentBlock.Item1, currentBlock.Item2].number = 7;
                     board.CheckForInvalidNumber(currentBlock.Item1, currentBlock.Item2);
                 }
-            }
 
-            if (currentKState.IsKeyDown(Keys.NumPad8) && lastKState.IsKeyUp(Keys.NumPad8) || (currentKState.IsKeyDown(Keys.D8) && lastKState.IsKeyUp(Keys.D8)) && board.grid[currentBlock.Item1, currentBlock.Item2].background == Block.BlockBackground.Selected)
-            {
-                if (board.grid[currentBlock.Item1, currentBlock.Item2].number == 0)
+                if (currentKState.IsKeyDown(Keys.NumPad8) && lastKState.IsKeyUp(Keys.NumPad8) || (currentKState.IsKeyDown(Keys.D8) && lastKState.IsKeyUp(Keys.D8)))
                 {
-                    board.blocksEntered++;
+                    if (board.grid[currentBlock.Item1, currentBlock.Item2].number == 0)
+                        board.blocksEntered++;
+
                     board.grid[currentBlock.Item1, currentBlock.Item2].number = 8;
                     board.CheckForInvalidNumber(currentBlock.Item1, currentBlock.Item2);
                 }
-            }
 
-            if (currentKState.IsKeyDown(Keys.NumPad9) && lastKState.IsKeyUp(Keys.NumPad9) || (currentKState.IsKeyDown(Keys.D9) && lastKState.IsKeyUp(Keys.D0)) && board.grid[currentBlock.Item1, currentBlock.Item2].background == Block.BlockBackground.Selected)
-            {
-                if (board.grid[currentBlock.Item1, currentBlock.Item2].number == 0)
+                if (currentKState.IsKeyDown(Keys.NumPad9) && lastKState.IsKeyUp(Keys.NumPad9) || (currentKState.IsKeyDown(Keys.D9) && lastKState.IsKeyUp(Keys.D0)))
                 {
-                    board.blocksEntered++;
+                    if (board.grid[currentBlock.Item1, currentBlock.Item2].number == 0)
+                        board.blocksEntered++;
+
                     board.grid[currentBlock.Item1, currentBlock.Item2].number = 9;
                     board.CheckForInvalidNumber(currentBlock.Item1, currentBlock.Item2);
                 }
-            }
 
-            if (currentKState.IsKeyDown(Keys.Decimal) && lastKState.IsKeyUp(Keys.Decimal) || (currentKState.IsKeyDown(Keys.Back) && lastKState.IsKeyUp(Keys.Back)) && board.grid[currentBlock.Item1, currentBlock.Item2].background == Block.BlockBackground.Selected)
-            {
-                if (board.grid[currentBlock.Item1, currentBlock.Item2].number != 0)
+                if (currentKState.IsKeyDown(Keys.Decimal) && lastKState.IsKeyUp(Keys.Decimal) || (currentKState.IsKeyDown(Keys.Back) && lastKState.IsKeyUp(Keys.Back)))
                 {
-                    board.blocksEntered--;
+                    if (board.grid[currentBlock.Item1, currentBlock.Item2].number != 0)
+                        board.blocksEntered--;
+
                     board.grid[currentBlock.Item1, currentBlock.Item2].number = 0;
                 }
             }
@@ -239,7 +238,6 @@ namespace Sudoku_CS
             {
                 System.Diagnostics.Debug.WriteLine("YOU WON");
             }
-
 
             board.Update(gameTime);
             base.Update(gameTime);

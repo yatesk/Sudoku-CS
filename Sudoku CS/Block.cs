@@ -25,13 +25,11 @@ namespace Sudoku_CS
         public BlockBackground background;
         public Vector2 position;
 
-        public static int size = 96;
-
         // better way?  Used to determine which grid block is clicked.
-        public static int[] xGridCoords = new int[] {56, 154, 252, 354, 452, 550, 652, 750, 848, 944}; 
-        public static int[] yGridCoords = new int[] {56, 154, 252, 354, 452, 550, 652, 750, 848, 944}; 
+        public static int[] gridCoords = new int[] { 56, 154, 252, 354, 452, 550, 652, 750, 848, 944 };
 
-        // int[] array1 = new int[] { 1, 3, 5, 7, 9 };
+        public static int Size = 96;
+
         public Block(Vector2 _position, BlockBackground _background, int _number = 0)
         {
             position = _position;
@@ -58,9 +56,10 @@ namespace Sudoku_CS
                 // Kind of centered.
                 spriteBatch.DrawString(numberFont, number.ToString(), new Vector2(position.X + 25, position.Y + 10), Color.Black);
 
+                // Draws red circle if the number is invalid.
                 if (invalidNumber)
                 {
-                    spriteBatch.Draw(invalidNumberImage, new Vector2(position.X + size - 24, position.Y + size - 24));
+                    spriteBatch.Draw(invalidNumberImage, new Vector2(position.X + Size - 24, position.Y + Size - 24));
                 }
             }
             else
@@ -77,114 +76,32 @@ namespace Sudoku_CS
             int relativeX = _x - (int)this.position.X;
             int relativeY = _y - (int)this.position.Y;
 
-            // better way? refactor
+            int column = 0;
+            int row = 0;
+
+            if (relativeX < 32)
+                column = 1;
+            else if (relativeX < 64)
+                column = 2;
+            else if (relativeX < 96)
+                column = 3;
+
             if (relativeY < 32)
-            {
-                if ( relativeX < 32)
-                {
-                    if (candidates.Contains(1))
-                    {
-                        candidates.Remove(1);
-                    }
-                    else
-                    {
-                        candidates.Add(1);
-                    }
-                }
-                else if (relativeX < 64)
-                {
-                    if (candidates.Contains(2))
-                    {
-                        candidates.Remove(2);
-                    }
-                    else
-                    {
-                        candidates.Add(2);
-                    }
-                }
-                else if (relativeX < 96)
-                {
-                    if (candidates.Contains(3))
-                    {
-                        candidates.Remove(3);
-                    }
-                    else
-                    {
-                        candidates.Add(3);
-                    }
-                }
-            }
+                row = 1;
             else if (relativeY < 64)
-            {
-                if (relativeX < 32)
-                {
-                    if (candidates.Contains(4))
-                    {
-                        candidates.Remove(4);
-                    }
-                    else
-                    {
-                        candidates.Add(4);
-                    }
-                }
-                else if (relativeX < 64)
-                {
-                    if (candidates.Contains(5))
-                    {
-                        candidates.Remove(5);
-                    }
-                    else
-                    {
-                        candidates.Add(5);
-                    }
-                }
-                else if (relativeX < 96)
-                {
-                    if (candidates.Contains(6))
-                    {
-                        candidates.Remove(6);
-                    }
-                    else
-                    {
-                        candidates.Add(6);
-                    }
-                }
-            }
+                row = 2;
             else if (relativeY < 96)
+                row = 3;
+
+            int whichCanidate = column + (row - 1) * 3;
+
+            if (candidates.Contains(whichCanidate))
             {
-                if (relativeX < 32)
-                {
-                    if (candidates.Contains(7))
-                    {
-                        candidates.Remove(7);
-                    }
-                    else
-                    {
-                        candidates.Add(7);
-                    }
-                }
-                else if (relativeX < 64)
-                {
-                    if (candidates.Contains(8))
-                    {
-                        candidates.Remove(8);
-                    }
-                    else
-                    {
-                        candidates.Add(8);
-                    }
-                }
-                else if (relativeX < 96)
-                {
-                    if (candidates.Contains(9))
-                    {
-                        candidates.Remove(9);
-                    }
-                    else
-                    {
-                        candidates.Add(9);
-                    }
-                }
+                candidates.Remove(whichCanidate);
+            }
+            else
+            {
+                candidates.Add(whichCanidate);
             }
 
             //System.Diagnostics.Debug.WriteLine(relativeX + " " + relativeY);
@@ -195,17 +112,17 @@ namespace Sudoku_CS
             int xIndex = -1;
             int yIndex = -1;
 
-            for (int i = 0; i < xGridCoords.Length - 1; i++)
+            for (int i = 0; i < gridCoords.Length - 1; i++)
             {
-                if (_x >= xGridCoords[i] && _x <= xGridCoords[i+1])
+                if (_x >= gridCoords[i] && _x <= gridCoords[i + 1])
                 {
                     xIndex = i;
                 }
             }
 
-            for (int i = 0; i < yGridCoords.Length - 1; i++)
+            for (int i = 0; i < gridCoords.Length - 1; i++)
             {
-                if (_y >= yGridCoords[i] && _y <= yGridCoords[i + 1])
+                if (_y >= gridCoords[i] && _y <= gridCoords[i + 1])
                 {
                     yIndex = i;
                 }
