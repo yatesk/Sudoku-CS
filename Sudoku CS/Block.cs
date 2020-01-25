@@ -7,6 +7,8 @@ namespace Sudoku_CS
 {
     class Block
     {
+        //System.Diagnostics.Debug.WriteLine(relativeX + " " + relativeY);
+
         static public SpriteFont numberFont;
         static public SpriteFont candidateFont;
 
@@ -16,7 +18,7 @@ namespace Sudoku_CS
         static public Texture2D invalidNumberImage;
 
         public int number;
-        public bool invalidNumber;
+        public bool validNumber;
 
         public List<int> candidates = new List<int>();
 
@@ -35,7 +37,7 @@ namespace Sudoku_CS
             position = _position;
             background = _background;
             number = _number;
-            invalidNumber = false;
+            validNumber = false;
         }
 
         // Draw Text Number, canadidate numbers, and background color.
@@ -57,7 +59,7 @@ namespace Sudoku_CS
                 spriteBatch.DrawString(numberFont, number.ToString(), new Vector2(position.X + 25, position.Y + 10), Color.Black);
 
                 // Draws red circle if the number is invalid.
-                if (invalidNumber)
+                if (!validNumber)
                 {
                     spriteBatch.Draw(invalidNumberImage, new Vector2(position.X + Size - 24, position.Y + Size - 24));
                 }
@@ -71,7 +73,7 @@ namespace Sudoku_CS
             }
         }
 
-        public void addOrRemoveCandidate(int _x, int _y)
+        public void AddOrRemoveCandidate(int _x, int _y)
         {
             int relativeX = _x - (int)this.position.X;
             int relativeY = _y - (int)this.position.Y;
@@ -103,8 +105,34 @@ namespace Sudoku_CS
             {
                 candidates.Add(whichCanidate);
             }
+        }
 
-            //System.Diagnostics.Debug.WriteLine(relativeX + " " + relativeY);
+        public void ChangeNumberWithMouse(int _x, int _y)
+        {
+            int relativeX = _x - (int)this.position.X;
+            int relativeY = _y - (int)this.position.Y;
+
+            int column = 0;
+            int row = 0;
+
+
+            if (relativeX < 32)
+                column = 1;
+            else if (relativeX < 64)
+                column = 2;
+            else if (relativeX < 96)
+                column = 3;
+
+            if (relativeY < 32)
+                row = 1;
+            else if (relativeY < 64)
+                row = 2;
+            else if (relativeY < 96)
+                row = 3;
+
+            int whichNumber = column + (row - 1) * 3;
+
+            number = whichNumber;
         }
 
         public static Tuple<int, int> WhichBlock(int _x, int _y)

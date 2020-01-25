@@ -16,8 +16,8 @@ namespace Sudoku_CS
         // Easy = 38. Medium = 30. Hard = 24
         public enum Difficulty { Easy = 38, Medium = 30, Hard = 24 };
 
-        int blocksRevealed = (int)Difficulty.Easy;
-        public int blocksEntered = (int)Difficulty.Easy;
+        public int blocksRevealed = 77; // (int)Difficulty.Easy;
+        public int correctBlocks = 0;
         public Block[,] grid = new Block[9, 9];
         public List<int[]> winningBlockGrid = new List<int[]>();
 
@@ -35,8 +35,6 @@ namespace Sudoku_CS
         {
             content = Content;
             backgroundPosition = new Vector2(50, 50);
-
-            //Array.Clear(blockGrid, 0, blockGrid.Length);
 
             // Fill blockGrid
             for (int i = 0; i < 9; i++)
@@ -79,7 +77,6 @@ namespace Sudoku_CS
 
             NewWinningGrid();
 
-            // 38 revealed
             int counter = 0;
 
             while (counter < blocksRevealed)
@@ -91,12 +88,11 @@ namespace Sudoku_CS
                 {
                     grid[x, y].number = winningBlockGrid[x][y];
                     grid[x, y].background = Block.BlockBackground.Revealed;
+                    grid[x, y].validNumber = true;
+                    correctBlocks++;
                     counter++;
                 }
             }
-
-            // reveal entire winning grid to test
-            //blockGrid = new List<int[]>(winningBlockGrid);
 
             LoadContent();
         }
@@ -111,45 +107,43 @@ namespace Sudoku_CS
             int[] randomNumbersRow = new int[randomNumbersRowSeed.Count];
             randomNumbersRowSeed.CopyTo(randomNumbersRow);
 
-            winningBlockGrid = seedRowToWinningBoard(randomNumbersRow);
-
-            //System.Diagnostics.Debug.WriteLine(randomNumbers3);
+            winningBlockGrid = SeedRowToWinningBoard(randomNumbersRow);
         }
 
-        public List<int[]> seedRowToWinningBoard(int[] seedRow)
+        public List<int[]> SeedRowToWinningBoard(int[] seedRow)
         {
             List<int[]> winningBlockGrid = new List<int[]>();
 
             winningBlockGrid.Add(seedRow);
 
-            seedRow = shiftRowBy(seedRow, 3);
+            seedRow = ShiftRowBy(seedRow, 3);
             winningBlockGrid.Add(seedRow);
 
-            seedRow = shiftRowBy(seedRow, 3);
+            seedRow = ShiftRowBy(seedRow, 3);
             winningBlockGrid.Add(seedRow);
 
-            seedRow = shiftRowBy(seedRow, 1);
+            seedRow = ShiftRowBy(seedRow, 1);
             winningBlockGrid.Add(seedRow);
 
-            seedRow = shiftRowBy(seedRow, 3);
+            seedRow = ShiftRowBy(seedRow, 3);
             winningBlockGrid.Add(seedRow);
 
-            seedRow = shiftRowBy(seedRow, 3);
+            seedRow = ShiftRowBy(seedRow, 3);
             winningBlockGrid.Add(seedRow);
 
-            seedRow = shiftRowBy(seedRow, 1);
+            seedRow = ShiftRowBy(seedRow, 1);
             winningBlockGrid.Add(seedRow);
 
-            seedRow = shiftRowBy(seedRow, 3);
+            seedRow = ShiftRowBy(seedRow, 3);
             winningBlockGrid.Add(seedRow);
 
-            seedRow = shiftRowBy(seedRow, 3);
+            seedRow = ShiftRowBy(seedRow, 3);
             winningBlockGrid.Add(seedRow);
 
             return winningBlockGrid;
         }
 
-        public int[] shiftRowBy(int[] row, int shift)
+        public int[] ShiftRowBy(int[] row, int shift)
         {
             int[] newRow = new int[9];
 
@@ -178,7 +172,8 @@ namespace Sudoku_CS
 
         public void Update(GameTime gameTime)
         {
-            timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (!isPaused)
+                timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -212,11 +207,11 @@ namespace Sudoku_CS
             timer = 0f;
         }
 
-        public void CheckForInvalidNumber(int _x, int _y)
+        public void ValidOrInvalidNumber(int _x, int _y)
         {
-            // refactor
             // check horizontal
             int count = 0;
+            bool valid = true;
 
             for (int i = 0; i < 9; i++)
             {
@@ -226,15 +221,9 @@ namespace Sudoku_CS
                 }
             }
 
-            if (count > 1)
-            {
-                grid[_x, _y].invalidNumber = true;
-                return;
-            }
-            else
-            {
-                grid[_x, _y].invalidNumber = false;
-            }
+            if (count != 1)
+                valid = false;
+
 
             // check vertical
             count = 0;
@@ -247,22 +236,12 @@ namespace Sudoku_CS
                 }
             }
 
-            if (count > 1)
-            {
-                grid[_x, _y].invalidNumber = true;
-                return;
-            }
-            else
-            {
-                grid[_x, _y].invalidNumber = false;
-            }
+            if (count != 1)
+                valid = false;
 
 
             // check subGrid
-            int[] subGridStartingCoords = new int[2];  // {x, y]
-
-            subGridStartingCoords = findSubGrid(_x, _y);
-
+            int[] subGridStartingCoords = FindSubGrid(_x, _y);  
             count = 0;
 
             for (int i = 0; i < 3; i++)
@@ -276,33 +255,44 @@ namespace Sudoku_CS
                 }
             }
 
-            if (count > 1)
+            if (count != 1)
+                valid = false;
+
+
+            if (grid[_x, _y].validNumber)
             {
-                grid[_x, _y].invalidNumber = true;
+                if(!valid)
+                {
+                    correctBlocks--;
+                    grid[_x, _y].validNumber = false;
+                }
             }
             else
             {
-                grid[_x, _y].invalidNumber = false;
+                if (valid)
+                {
+                    correctBlocks++;
+                    grid[_x, _y].validNumber = true;
+                }
             }
         }
 
-        // refactor
-        private int[] findSubGrid(int x, int y)
+        private int[] FindSubGrid(int x, int y)
         {
             int[] subGridStartingCoords = new int[2];
 
-            if (x == 0 || x == 1 || x == 2)
+            if (x >= 0 && x <= 2)
                 subGridStartingCoords[0] = 0; 
-            else if (x == 3 || x == 4 || x == 5)
+            else if (x >= 3 && x <= 5)
                 subGridStartingCoords[0] = 3;
-            else if (x == 6 || x == 7 || x == 8)
+            else if (x >= 6 && x <= 8)
                 subGridStartingCoords[0] = 6;
 
-            if (y == 0 || y == 1 || y == 2)
+            if (y >= 0 && y <= 2)
                 subGridStartingCoords[1] = 0;
-            else if (y == 3 || y == 4 || y == 5)
+            else if (y >= 3 && y <= 5)
                 subGridStartingCoords[1] = 3;
-            else if (y == 6 || y == 7 || y == 8)
+            else if (y >= 6 && y <= 8)
                 subGridStartingCoords[1] = 6;
 
             return subGridStartingCoords;
