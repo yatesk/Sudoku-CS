@@ -16,7 +16,7 @@ namespace Sudoku_CS
         // Easy = 38. Medium = 30. Hard = 24
         public enum Difficulty { Easy = 38, Medium = 30, Hard = 24 };
 
-        public int blocksRevealed = 75; // (int)Difficulty.Easy;
+        public int blocksRevealed = (int)Difficulty.Easy;
         public int correctBlocks = 0;
         public Block[,] grid = new Block[9, 9];
         public List<int[]> winningBlockGrid = new List<int[]>();
@@ -24,8 +24,9 @@ namespace Sudoku_CS
         public Texture2D backgroundImage;
         public Vector2 backgroundPosition;
 
-        public Texture2D pauseImage;
+        public Texture2D newPuzzleImage;
 
+        public Texture2D pauseImage;
 
         public float timer = 0f;
         public bool isPaused = false;
@@ -73,8 +74,6 @@ namespace Sudoku_CS
                     }
 
                     grid[i, j] = new Block(new Vector2((i * 84) + boardBoarder + gridMarginX, boardBoarder + (j * 84) + gridMarginY), Block.BlockBackground.None, 0);
-
-                    System.Diagnostics.Debug.WriteLine((i * 84) + boardBoarder + gridMarginX);
                 }
             }
 
@@ -161,6 +160,7 @@ namespace Sudoku_CS
         public void LoadContent()
         {
             backgroundImage = content.Load<Texture2D>("background");
+            newPuzzleImage = content.Load<Texture2D>("newPuzzle");
 
             pauseImage = content.Load<Texture2D>("pause");
 
@@ -183,10 +183,15 @@ namespace Sudoku_CS
         {
             spriteBatch.Draw(backgroundImage, backgroundPosition);
 
-            // Draw grid
-            for (int i = 0; i < 9; i++)
-                for (int j = 0; j < 9; j++)
-                    grid[i, j].Draw(spriteBatch);
+            if (!isPaused)
+            {
+                // Draw grid
+                for (int i = 0; i < 9; i++)
+                    for (int j = 0; j < 9; j++)
+                        grid[i, j].Draw(spriteBatch);
+            }
+            else
+                spriteBatch.DrawString(Block.numberFont, "PAUSED", new Vector2(375, 375), Color.Black);
 
             //// Draw timer
             //// refactor
@@ -202,6 +207,8 @@ namespace Sudoku_CS
             }
 
             spriteBatch.Draw(pauseImage, new Vector2(890, 53));
+
+            spriteBatch.Draw(newPuzzleImage, new Vector2(850, 800));
 
         }
 

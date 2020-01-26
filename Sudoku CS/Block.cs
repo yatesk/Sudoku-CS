@@ -22,7 +22,7 @@ namespace Sudoku_CS
 
         public List<int> candidates = new List<int>();
 
-        public enum BlockBackground { None, Revealed, };// Selected };
+        public enum BlockBackground { None, Revealed, };
 
         public BlockBackground background;
         public Vector2 position;
@@ -43,13 +43,10 @@ namespace Sudoku_CS
         // Draw Text Number, canadidate numbers, and background color.
         public void Draw(SpriteBatch spriteBatch)
         {
-
-
             if (background == BlockBackground.Revealed)
             {
                 spriteBatch.Draw(revealedBlockImage, position);
             }
-
 
             if (number != 0)
             {
@@ -119,6 +116,8 @@ namespace Sudoku_CS
                 column = 2;
             else if (relativeX < 84)
                 column = 3;
+            else
+                return;
 
             if (relativeY < 28)
                 row = 1;
@@ -126,6 +125,8 @@ namespace Sudoku_CS
                 row = 2;
             else if (relativeY < 84)
                 row = 3;
+            else
+                return;
 
             int whichNumber = column + (row - 1) * 3;
 

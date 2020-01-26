@@ -10,19 +10,18 @@ namespace Sudoku_CS
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        Board board;
+        private Board board;
 
-        MouseState lastMState;
-        MouseState currentMState;
+        private MouseState lastMState;
+        private MouseState currentMState;
 
-        KeyboardState lastKState;
-        KeyboardState currentKState;
+        private KeyboardState lastKState;
+        private KeyboardState currentKState;
 
-        int screenWidth = 1000;
-        int screenHeight = 850;
+        private int screenWidth = 1000;
+        private int screenHeight = 850;
 
-        Tuple<int, int> lastBlock; // last selected block
-        Tuple<int, int> currentBlock; // current selected block
+        private Tuple<int, int> clickedBlock; // current selected block
 
         public Game1()
         {
@@ -33,8 +32,7 @@ namespace Sudoku_CS
             this.Window.Title = "Sudoku";
             this.IsMouseVisible = true;
 
-            lastBlock = new Tuple<int, int>(-1, -1);
-            currentBlock = new Tuple<int, int>(-1, -1);
+            clickedBlock = new Tuple<int, int>(-1, -1);
         }
 
         /// <summary>
@@ -88,30 +86,17 @@ namespace Sudoku_CS
             {
                 //System.Diagnostics.Debug.WriteLine(currentMouseState.X + " " + currentMouseState.Y);
 
+                clickedBlock = Block.WhichBlock(currentMState.X, currentMState.Y);
 
-
-
-
-                currentBlock = Block.WhichBlock(currentMState.X, currentMState.Y);
-
-                if (currentBlock.Item1 != -1)
+                if (clickedBlock.Item1 != -1 && !board.isPaused)
                 {
-                    if (board.grid[currentBlock.Item1, currentBlock.Item2].background == Block.BlockBackground.None)
-                    {
-                        if (lastBlock.Item1 != -1)
-                        {
-                            board.grid[lastBlock.Item1, lastBlock.Item2].background = Block.BlockBackground.None;
-                        }
- 
-                        lastBlock = currentBlock;
 
-                    }
-
-                    board.grid[currentBlock.Item1, currentBlock.Item2].AddOrRemoveCandidate(currentMState.X, currentMState.Y);
+                    if (board.grid[clickedBlock.Item1, clickedBlock.Item2].number == 0)
+                        board.grid[clickedBlock.Item1, clickedBlock.Item2].AddOrRemoveCandidate(currentMState.X, currentMState.Y);
                 }
             }
             else if ((currentMState.LeftButton == ButtonState.Pressed && lastMState.LeftButton == ButtonState.Released))
-            { 
+            {
                 //// Check pause button
                 if (currentMState.X >= 890 && currentMState.X <= 906 && currentMState.Y >= 53 && currentMState.Y <= 69)
                     if (board.isPaused)
@@ -119,16 +104,23 @@ namespace Sudoku_CS
                     else
                         board.isPaused = true;
 
-                currentBlock = Block.WhichBlock(currentMState.X, currentMState.Y);
+                clickedBlock = Block.WhichBlock(currentMState.X, currentMState.Y);
 
-                board.grid[currentBlock.Item1, currentBlock.Item2].ChangeNumberWithMouse(currentMState.X, currentMState.Y);
-                board.ValidOrInvalidNumber(currentBlock.Item1, currentBlock.Item2);
+                if (clickedBlock.Item1 != -1 && !board.isPaused && board.grid[clickedBlock.Item1, clickedBlock.Item2].background != Block.BlockBackground.Revealed)
+                {
+                    board.grid[clickedBlock.Item1, clickedBlock.Item2].ChangeNumberWithMouse(currentMState.X, currentMState.Y);
+                    board.ValidOrInvalidNumber(clickedBlock.Item1, clickedBlock.Item2);
+                }
             }
-            else if ((currentMState.MiddleButton == ButtonState.Pressed && lastMState.MiddleButton == ButtonState.Released))
+            else if ((currentMState.MiddleButton == ButtonState.Pressed && lastMState.MiddleButton == ButtonState.Released) && !board.isPaused)
             {
-                currentBlock = Block.WhichBlock(currentMState.X, currentMState.Y);
-                board.grid[currentBlock.Item1, currentBlock.Item2].number = 0;
-                board.ValidOrInvalidNumber(currentBlock.Item1, currentBlock.Item2);
+                clickedBlock = Block.WhichBlock(currentMState.X, currentMState.Y);
+
+                if (clickedBlock.Item1 != -1 && board.grid[clickedBlock.Item1, clickedBlock.Item2].background != Block.BlockBackground.Revealed)
+                { 
+                    board.grid[clickedBlock.Item1, clickedBlock.Item2].number = 0;
+                    board.ValidOrInvalidNumber(clickedBlock.Item1, clickedBlock.Item2);
+                }
             }
 
             // Keyboard Input   currentBlock is (-1, -1) if mouse click was out of bounds.
