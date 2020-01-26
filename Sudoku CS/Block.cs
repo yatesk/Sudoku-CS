@@ -22,7 +22,7 @@ namespace Sudoku_CS
 
         public List<int> candidates = new List<int>();
 
-        public enum BlockBackground { None, Revealed, Selected };
+        public enum BlockBackground { None, Revealed, };// Selected };
 
         public BlockBackground background;
         public Vector2 position;
@@ -49,11 +49,7 @@ namespace Sudoku_CS
             {
                 spriteBatch.Draw(revealedBlockImage, position);
             }
-            else if (background == BlockBackground.Selected)
-            {
-                spriteBatch.Draw(selectedBlockImage, position);
 
-            }
 
             if (number != 0)
             {

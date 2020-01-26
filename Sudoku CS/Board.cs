@@ -16,7 +16,7 @@ namespace Sudoku_CS
         // Easy = 38. Medium = 30. Hard = 24
         public enum Difficulty { Easy = 38, Medium = 30, Hard = 24 };
 
-        public int blocksRevealed = 77; // (int)Difficulty.Easy;
+        public int blocksRevealed = 75; // (int)Difficulty.Easy;
         public int correctBlocks = 0;
         public Block[,] grid = new Block[9, 9];
         public List<int[]> winningBlockGrid = new List<int[]>();
@@ -26,7 +26,6 @@ namespace Sudoku_CS
 
         public Texture2D pauseImage;
 
-        public bool blockSelected = false;
 
         public float timer = 0f;
         public bool isPaused = false;
@@ -191,19 +190,19 @@ namespace Sudoku_CS
 
             //// Draw timer
             //// refactor
-            //int time = (int)timer;
-            
-            //if (time % 60 < 10)
-            //{
-            //    spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":0" + (time % 60).ToString(), new Vector2(450, 0), Color.Black);
-            //}
-            //else
-            //{
-            //    spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":" + (time % 60).ToString(), new Vector2(450, 0), Color.Black);
-            //}
-            
-            //spriteBatch.Draw(pauseImage, new Vector2(500, 4));
-            
+            int time = (int)timer;
+
+            if (time % 60 < 10)
+            {
+                spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":0" + (time % 60).ToString(), new Vector2(850, 50), Color.Black);
+            }
+            else
+            {
+                spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":" + (time % 60).ToString(), new Vector2(850, 50), Color.Black);
+            }
+
+            spriteBatch.Draw(pauseImage, new Vector2(890, 53));
+
         }
 
         public void NewGame()
@@ -245,7 +244,7 @@ namespace Sudoku_CS
 
 
             // check subGrid
-            int[] subGridStartingCoords = FindSubGrid(_x, _y);  
+            int[] subGridStartingCoords = FindSubGrid(_x, _y);
             count = 0;
 
             for (int i = 0; i < 3; i++)
@@ -265,7 +264,7 @@ namespace Sudoku_CS
 
             if (grid[_x, _y].validNumber)
             {
-                if(!valid)
+                if (!valid)
                 {
                     correctBlocks--;
                     grid[_x, _y].validNumber = false;
@@ -286,7 +285,7 @@ namespace Sudoku_CS
             int[] subGridStartingCoords = new int[2];
 
             if (x >= 0 && x <= 2)
-                subGridStartingCoords[0] = 0; 
+                subGridStartingCoords[0] = 0;
             else if (x >= 3 && x <= 5)
                 subGridStartingCoords[0] = 3;
             else if (x >= 6 && x <= 8)
