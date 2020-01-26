@@ -28,9 +28,9 @@ namespace Sudoku_CS
         public Vector2 position;
 
         // better way?  Used to determine which grid block is clicked.
-        public static int[] gridCoords = new int[] { 56, 154, 252, 354, 452, 550, 652, 750, 848, 944 };
+        public static int[] gridCoords = new int[] { 17, 104, 191, 281, 368, 455, 545, 632, 719, 803 };
 
-        public static int Size = 96;
+        public static int Size = 84;
 
         public Block(Vector2 _position, BlockBackground _background, int _number = 0)
         {
@@ -43,6 +43,8 @@ namespace Sudoku_CS
         // Draw Text Number, canadidate numbers, and background color.
         public void Draw(SpriteBatch spriteBatch)
         {
+
+
             if (background == BlockBackground.Revealed)
             {
                 spriteBatch.Draw(revealedBlockImage, position);
@@ -56,7 +58,7 @@ namespace Sudoku_CS
             if (number != 0)
             {
                 // Kind of centered.
-                spriteBatch.DrawString(numberFont, number.ToString(), new Vector2(position.X + 25, position.Y + 10), Color.Black);
+                spriteBatch.DrawString(numberFont, number.ToString(), new Vector2(position.X + 20, position.Y + 2), Color.Black);
 
                 // Draws red circle if the number is invalid.
                 if (!validNumber)
@@ -68,7 +70,7 @@ namespace Sudoku_CS
             {
                 foreach (int item in candidates)
                 {
-                    spriteBatch.DrawString(candidateFont, item.ToString(), new Vector2(position.X + 5 + (((item - 1) % 3) * 35), position.Y + ((item - 1) / 3) * 35), Color.Black);
+                    spriteBatch.DrawString(candidateFont, item.ToString(), new Vector2(position.X + 5 + (((item - 1) % 3) * 30), position.Y + ((item - 1) / 3) * 30), Color.Black);
                 }
             }
         }
@@ -81,18 +83,18 @@ namespace Sudoku_CS
             int column = 0;
             int row = 0;
 
-            if (relativeX < 32)
+            if (relativeX < 28)
                 column = 1;
-            else if (relativeX < 64)
+            else if (relativeX < 56)
                 column = 2;
-            else if (relativeX < 96)
+            else if (relativeX < 84)
                 column = 3;
 
-            if (relativeY < 32)
+            if (relativeY < 28)
                 row = 1;
-            else if (relativeY < 64)
+            else if (relativeY < 56)
                 row = 2;
-            else if (relativeY < 96)
+            else if (relativeY < 84)
                 row = 3;
 
             int whichCanidate = column + (row - 1) * 3;
@@ -115,19 +117,18 @@ namespace Sudoku_CS
             int column = 0;
             int row = 0;
 
-
-            if (relativeX < 32)
+            if (relativeX < 28)
                 column = 1;
-            else if (relativeX < 64)
+            else if (relativeX < 56)
                 column = 2;
-            else if (relativeX < 96)
+            else if (relativeX < 84)
                 column = 3;
 
-            if (relativeY < 32)
+            if (relativeY < 28)
                 row = 1;
-            else if (relativeY < 64)
+            else if (relativeY < 56)
                 row = 2;
-            else if (relativeY < 96)
+            else if (relativeY < 84)
                 row = 3;
 
             int whichNumber = column + (row - 1) * 3;

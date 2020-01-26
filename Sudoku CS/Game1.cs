@@ -18,8 +18,8 @@ namespace Sudoku_CS
         KeyboardState lastKState;
         KeyboardState currentKState;
 
-        int screenWidth = 1200;
-        int screenHeight = 1000;
+        int screenWidth = 1000;
+        int screenHeight = 850;
 
         Tuple<int, int> lastBlock; // last selected block
         Tuple<int, int> currentBlock; // current selected block
@@ -88,12 +88,13 @@ namespace Sudoku_CS
             {
                 //System.Diagnostics.Debug.WriteLine(currentMouseState.X + " " + currentMouseState.Y);
 
-                // Check pause button
-                if (currentMState.X >= 550 && currentMState.X <= 566 && currentMState.Y >= 4 && currentMState.Y <= 20)
-                    if (board.isPaused)
-                        board.isPaused = false;
-                    else
-                        board.isPaused = true;
+
+                //// Check pause button
+                //if (currentMState.X >= 500 && currentMState.X <= 516 && currentMState.Y >= 4 && currentMState.Y <= 20)
+                //    if (board.isPaused)
+                //        board.isPaused = false;
+                //    else
+                //        board.isPaused = true;
 
 
                 currentBlock = Block.WhichBlock(currentMState.X, currentMState.Y);
@@ -126,10 +127,19 @@ namespace Sudoku_CS
                     board.ValidOrInvalidNumber(currentBlock.Item1, currentBlock.Item2);
                 }
             }
+            else if ((currentMState.MiddleButton == ButtonState.Pressed && lastMState.MiddleButton == ButtonState.Released))
+            {
+                currentBlock = Block.WhichBlock(currentMState.X, currentMState.Y);
+                if (board.grid[currentBlock.Item1, currentBlock.Item2].background == Block.BlockBackground.Selected)
+                {
+                    board.grid[currentBlock.Item1, currentBlock.Item2].number = 0;
+                    board.ValidOrInvalidNumber(currentBlock.Item1, currentBlock.Item2);
+                }
+            }
 
-            // Keyboard Input   currentBlock is (-1, -1) if mouse click was out of bounds.
-            // refactor to replace tuple (x, y) to int block id 0-80 or 1-81
-            if (currentBlock.Item1 != -1 && board.grid[currentBlock.Item1, currentBlock.Item2].background == Block.BlockBackground.Selected)
+                // Keyboard Input   currentBlock is (-1, -1) if mouse click was out of bounds.
+                // refactor to replace tuple (x, y) to int block id 0-80 or 1-81
+                if (currentBlock.Item1 != -1 && board.grid[currentBlock.Item1, currentBlock.Item2].background == Block.BlockBackground.Selected)
             {
                 if ((currentKState.IsKeyDown(Keys.NumPad1) && lastKState.IsKeyUp(Keys.NumPad1)) || (currentKState.IsKeyDown(Keys.D1) && lastKState.IsKeyUp(Keys.D1)))
                 {
@@ -192,14 +202,8 @@ namespace Sudoku_CS
             }
 
 
-            // checks to see if player won
-            // refactor
-            System.Diagnostics.Debug.WriteLine(board.correctBlocks);
+            
 
-            if (board.correctBlocks == 81)
-            {
-                System.Diagnostics.Debug.WriteLine("YOU WON");
-            }
 
             board.Update(gameTime);
             base.Update(gameTime);
@@ -215,6 +219,14 @@ namespace Sudoku_CS
             spriteBatch.Begin();
 
             board.Draw(spriteBatch);
+
+            // checks to see if player won
+            if (board.correctBlocks == 81)
+            {
+                System.Diagnostics.Debug.WriteLine("YOU WON");
+                spriteBatch.DrawString(Block.numberFont, "YOU", new Vector2(800, 400), Color.Black);
+                spriteBatch.DrawString(Block.numberFont, "WON", new Vector2(800, 475), Color.Black);
+            }
 
             spriteBatch.End();
             base.Draw(gameTime);

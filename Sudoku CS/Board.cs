@@ -31,47 +31,51 @@ namespace Sudoku_CS
         public float timer = 0f;
         public bool isPaused = false;
 
+        private int boardBoarder = 10;
+
         public Board(ContentManager Content)
         {
             content = Content;
-            backgroundPosition = new Vector2(50, 50);
+            backgroundPosition = new Vector2(boardBoarder, boardBoarder);
 
             // Fill blockGrid
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    int gridMarginX = 0;
-                    int gridMarginY = 0;
+                    int gridMarginX = 7;
+                    int gridMarginY = 7;
 
                     // better way?
                     if (i < 3)
                     {
-                        gridMarginX = 2 * i;
+                        gridMarginX += 3 * i;
                     }
                     else if (i < 6)
                     {
-                        gridMarginX = (2 * i) + 4;
+                        gridMarginX += (3 * i) + 3;  // subgrid margin - Block margin = 3
                     }
                     else if (i < 9)
                     {
-                        gridMarginX = (2 * i) + 8;
+                        gridMarginX += (3 * i) + 6;  // (subgrid margin - Block margin) * 2 = 6
                     }
 
                     if (j < 3)
                     {
-                        gridMarginY = 2 * j;
+                        gridMarginY += 3 * j;
                     }
                     else if (j < 6)
                     {
-                        gridMarginY = (2 * j) + 4;
+                        gridMarginY += (3 * j) + 3;
                     }
                     else if (j < 9)
                     {
-                        gridMarginY = (2 * j) + 8;
+                        gridMarginY += (3 * j) + 6;
                     }
 
-                    grid[i, j] = new Block(new Vector2((i * 96) + 56 + gridMarginX, 56 + (j * 96) + gridMarginY), Block.BlockBackground.None, 0);
+                    grid[i, j] = new Block(new Vector2((i * 84) + boardBoarder + gridMarginX, boardBoarder + (j * 84) + gridMarginY), Block.BlockBackground.None, 0);
+
+                    System.Diagnostics.Debug.WriteLine((i * 84) + boardBoarder + gridMarginX);
                 }
             }
 
@@ -185,20 +189,20 @@ namespace Sudoku_CS
                 for (int j = 0; j < 9; j++)
                     grid[i, j].Draw(spriteBatch);
 
-            // Draw timer
-            // refactor
-            int time = (int)timer;
+            //// Draw timer
+            //// refactor
+            //int time = (int)timer;
             
-            if (time % 60 < 10)
-            {
-                spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":0" + (time % 60).ToString(), new Vector2(500, 0), Color.Black);
-            }
-            else
-            {
-                spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":" + (time % 60).ToString(), new Vector2(500, 0), Color.Black);
-            }
+            //if (time % 60 < 10)
+            //{
+            //    spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":0" + (time % 60).ToString(), new Vector2(450, 0), Color.Black);
+            //}
+            //else
+            //{
+            //    spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":" + (time % 60).ToString(), new Vector2(450, 0), Color.Black);
+            //}
             
-            spriteBatch.Draw(pauseImage, new Vector2(550, 4));
+            //spriteBatch.Draw(pauseImage, new Vector2(500, 4));
             
         }
 
