@@ -13,10 +13,11 @@ namespace Sudoku_CS
         Random r = new Random();
 
         // Easy = 36+ blocks revealed. Medium = 27-36 blocks revealed. Hard = 19-26 blocks revealed.
-        // Easy = 38. Medium = 30. Hard = 24
-        public enum Difficulty { Easy = 38, Medium = 30, Hard = 24 };
+        //public enum Difficulty { Easy = 38, Medium = 30, Hard = 24 };
 
-        public int blocksRevealed = 38; // (int)Difficulty.Easy;
+        public string difficulty = "Easy";
+
+        //public int blocksRevealed = 38; // (int)Difficulty.Easy;
         public int correctBlocks = 0;
         public Block[,] grid = new Block[9, 9];
         public List<int[]> winningBlockGrid = new List<int[]>();
@@ -26,11 +27,13 @@ namespace Sudoku_CS
 
         public Texture2D newPuzzleImage;
         public Texture2D savePuzzleImage;
+        public Texture2D difficultiesImage;
 
         public Texture2D pauseImage;
 
         public float timer = 0f;
         public bool isPaused = false;
+        public bool newPuzzle = false;
 
         private int boardBoarder = 10;
 
@@ -77,7 +80,6 @@ namespace Sudoku_CS
                     grid[i, j] = new Block(new Vector2((i * 84) + boardBoarder + gridMarginX, boardBoarder + (j * 84) + gridMarginY), false, 0);
                 }
             }
-
 
             LoadBoardFromTextfile();
             //NewWinningGrid();
@@ -165,12 +167,11 @@ namespace Sudoku_CS
             backgroundImage = content.Load<Texture2D>("background");
             newPuzzleImage = content.Load<Texture2D>("newPuzzle");
             savePuzzleImage = content.Load<Texture2D>("savePuzzle");
+            difficultiesImage = content.Load<Texture2D>("difficulties");
 
             pauseImage = content.Load<Texture2D>("pause");
 
-            Block.selectedBlockImage = content.Load<Texture2D>("selectedBlock");
             Block.revealedBlockImage = content.Load<Texture2D>("revealedBlock");
-
             Block.invalidNumberImage = content.Load<Texture2D>("invalidNumber");
 
             Block.numberFont = content.Load<SpriteFont>("numberFont");
@@ -210,11 +211,15 @@ namespace Sudoku_CS
                 spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":" + (time % 60).ToString(), new Vector2(850, 50), Color.Black);
             }
 
+            spriteBatch.DrawString(Block.candidateFont, difficulty, new Vector2(850, 0), Color.Black);
+
             spriteBatch.Draw(pauseImage, new Vector2(900, 53));
 
             spriteBatch.Draw(newPuzzleImage, new Vector2(850, 800));
             spriteBatch.Draw(savePuzzleImage, new Vector2(850, 150));
 
+            if (newPuzzle)
+                spriteBatch.Draw(difficultiesImage, new Vector2(850, 500));
         }
 
         public void NewGame()
@@ -235,7 +240,6 @@ namespace Sudoku_CS
             }
 
             NewPuzzle();
-
 
             //NewWinningGrid();
 
@@ -262,7 +266,7 @@ namespace Sudoku_CS
             String line;
             List<char[]> level = new List<char[]>();
 
-            FileStream fsSource = new FileStream("easy.txt", FileMode.OpenOrCreate, FileAccess.Read);
+            FileStream fsSource = new FileStream(difficulty + ".txt", FileMode.OpenOrCreate, FileAccess.Read);
             using (StreamReader sr = new StreamReader(fsSource))
             {
                 int randomNumber = r.Next(0, 21);
@@ -273,22 +277,14 @@ namespace Sudoku_CS
                     line = sr.ReadLine();
                 }
 
-               // System.Diagnostics.Debug.WriteLine(line);
-
-
-
                 for (int i = 0; i < 9; i++)
                 {
                     line = sr.ReadLine();
-                    //List<int> numbers = new List<int>(Array.ConvertAll(line.Split(" "), int.Parse));
 
-               
                     for (int j = 0; j < 9; j++)
                     {
                         if (line[j] != '.')
                         {
-                            System.Diagnostics.Debug.WriteLine(line[j]);
-                            //grid[i, j].number = (int)line[j];
                             grid[i, j].number = (int)char.GetNumericValue(line[j]);
                             grid[i, j].revealed = true;
                             grid[i, j].validNumber = true;
@@ -302,37 +298,6 @@ namespace Sudoku_CS
                         }
          
                     }
-
-                        
-
-
-                        //if (numbers[1] == 1)
-                        //{
-                        //    grid[column, row].revealed = true;
-                        //}
-                        //else
-                        //{
-                        //    grid[column, row].revealed = false;
-                        //}
-
-                        //if (numbers[2] == 1)
-                        //{
-                        //    grid[column, row].validNumber = true;
-                        //    correctBlocks++;
-                        //}
-                        //else
-                        //{
-                        //    grid[column, row].validNumber = false;
-                        //}
-
-                        //for (int i = 3; i < numbers.Count; i++)
-                        //{
-                        //    grid[column, row].candidates.Add(numbers[i]);
-
-                        //    System.Diagnostics.Debug.WriteLine(i);
-                        //}
-
-                    
                 }
             }
         }
@@ -354,7 +319,6 @@ namespace Sudoku_CS
             if (count != 1)
                 valid = false;
 
-
             // check vertical
             count = 0;
 
@@ -368,7 +332,6 @@ namespace Sudoku_CS
 
             if (count != 1)
                 valid = false;
-
 
             // check subGrid
             int[] subGridStartingCoords = FindSubGrid(_x, _y);
@@ -387,7 +350,6 @@ namespace Sudoku_CS
 
             if (count != 1)
                 valid = false;
-
 
             if (grid[_x, _y].validNumber)
             {
@@ -415,6 +377,8 @@ namespace Sudoku_CS
             FileStream fsSource = new FileStream("savedBoard.txt", FileMode.OpenOrCreate, FileAccess.Read);
             using (StreamReader sr = new StreamReader(fsSource))
             {
+                difficulty = sr.ReadLine();
+                timer = float.Parse(sr.ReadLine());
 
                 for (int column = 0; column < 9; column++)
                 {
@@ -424,7 +388,6 @@ namespace Sudoku_CS
                         List<int> numbers = new List<int>(Array.ConvertAll(line.Split(' '), int.Parse));
 
                         grid[column, row].number = numbers[0];
-
 
                         if (numbers[1] == 1)
                         {
@@ -448,10 +411,7 @@ namespace Sudoku_CS
                         for (int i = 3; i < numbers.Count; i++)
                         {
                             grid[column, row].candidates.Add(numbers[i]);
-
-                            System.Diagnostics.Debug.WriteLine(i);
                         }
-
                     }
                 }
             }
@@ -461,6 +421,8 @@ namespace Sudoku_CS
         {
             StreamWriter sw = new StreamWriter("savedBoard.txt");  //FileStream("savedBoard.txt", FileMode.Open, FileAccess.Write);
 
+            sw.WriteLine(difficulty);
+            sw.WriteLine(timer);
 
             for (int column = 0; column < 9; column++)
             {
@@ -476,11 +438,10 @@ namespace Sudoku_CS
 
                     line += " ";
 
-                    if (grid[column, row].validNumber)
+                    if (grid[column, row].validNumber && grid[column, row].number != 0)
                         line += 1;
                     else
                         line += 0;
-
 
                     foreach (int candidate in grid[column, row].candidates)
                     {
@@ -491,9 +452,7 @@ namespace Sudoku_CS
                     sw.WriteLine(line);
                 }
             }
-
             sw.Close();
-
         }
 
         private int[] FindSubGrid(int x, int y)

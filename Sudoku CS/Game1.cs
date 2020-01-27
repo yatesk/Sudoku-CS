@@ -15,7 +15,7 @@ namespace Sudoku_CS
         private MouseState lastMState;
         private MouseState currentMState;
 
-        private KeyboardState lastKState;
+        //private KeyboardState lastKState;
         private KeyboardState currentKState;
 
         private int screenWidth = 1000;
@@ -76,7 +76,7 @@ namespace Sudoku_CS
             lastMState = currentMState;
             currentMState = Mouse.GetState();
 
-            lastKState = currentKState;
+            //lastKState = currentKState;
             currentKState = Keyboard.GetState();
 
             if (currentKState.IsKeyDown(Keys.Escape))
@@ -84,8 +84,6 @@ namespace Sudoku_CS
 
             if (currentMState.RightButton == ButtonState.Pressed && lastMState.RightButton == ButtonState.Released)
             {
-                //System.Diagnostics.Debug.WriteLine(currentMouseState.X + " " + currentMouseState.Y);
-
                 clickedBlock = Block.WhichBlock(currentMState.X, currentMState.Y);
 
                 if (clickedBlock.Item1 != -1 && !board.isPaused)
@@ -106,17 +104,32 @@ namespace Sudoku_CS
                 // check save button
                 else if (currentMState.X >= 850 && currentMState.X <= 1000 && currentMState.Y >= 150 && currentMState.Y <= 200)
                 {
-                    System.Diagnostics.Debug.WriteLine("saved");
                     board.SaveBoard();
                 }
                 // check new puzzle button
                 else if (currentMState.X >= 850 && currentMState.X <= 1000 && currentMState.Y >= 800 && currentMState.Y <= 850)
                 {
-                    board.NewGame();
+                    board.newPuzzle = true;
                 }
+                // check puzzle difficulty button
+                else if (currentMState.X >= 850 && currentMState.X <= 1000 && currentMState.Y >= 500 && currentMState.Y <= 650 && board.newPuzzle)
+                {
+                    if (currentMState.Y >= 500 && currentMState.Y <= 550)
+                    {
+                        board.difficulty = "Easy";
+                    }
+                    else if (currentMState.Y > 550 && currentMState.Y < 600)
+                    {
+                        board.difficulty = "Medium";
+                    }
+                    else if (currentMState.Y >= 600 && currentMState.Y <= 650)
+                    {
+                        board.difficulty = "Hard";
+                    }
 
-
-
+                    board.NewGame();
+                    board.newPuzzle = false;
+                }
 
                 clickedBlock = Block.WhichBlock(currentMState.X, currentMState.Y);
 

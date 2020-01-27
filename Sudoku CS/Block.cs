@@ -12,9 +12,7 @@ namespace Sudoku_CS
         static public SpriteFont numberFont;
         static public SpriteFont candidateFont;
 
-        static public Texture2D selectedBlockImage;
         static public Texture2D revealedBlockImage;
-
         static public Texture2D invalidNumberImage;
 
         public int number;
@@ -24,7 +22,6 @@ namespace Sudoku_CS
 
         public bool revealed;
 
-        //public BlockBackground background;
         public Vector2 position;
 
         // better way?  Used to determine which grid block is clicked.
@@ -32,7 +29,6 @@ namespace Sudoku_CS
 
         public static int Size = 84;
 
-        //public Block(Vector2 _position, BlockBackground _background, int _number = 0)
         public Block(Vector2 _position, bool _revealed, int _number = 0)
         {
             position = _position;
