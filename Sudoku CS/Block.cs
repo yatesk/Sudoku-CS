@@ -83,6 +83,8 @@ namespace Sudoku_CS
                 column = 2;
             else if (relativeX < 84)
                 column = 3;
+            else
+                return;
 
             if (relativeY < 28)
                 row = 1;
@@ -90,6 +92,8 @@ namespace Sudoku_CS
                 row = 2;
             else if (relativeY < 84)
                 row = 3;
+            else
+                return;
 
             int whichCanidate = column + (row - 1) * 3;
 

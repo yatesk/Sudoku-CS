@@ -79,7 +79,7 @@ namespace Sudoku_CS
             }
 
 
-            LoadBoard();
+            LoadBoardFromTextfile();
             //NewWinningGrid();
 
             //int counter = 0;
@@ -234,23 +234,105 @@ namespace Sudoku_CS
                 }
             }
 
+            NewPuzzle();
 
-            NewWinningGrid();
 
-            int counter = 0;
+            //NewWinningGrid();
 
-            while (counter < blocksRevealed)
+            //int counter = 0;
+
+            //while (counter < blocksRevealed)
+            //{
+            //    int x = r.Next(0, 9);
+            //    int y = r.Next(0, 9);
+
+            //    if (!grid[x, y].revealed)
+            //    {
+            //        grid[x, y].number = winningBlockGrid[x][y];
+            //        grid[x, y].revealed = true;
+            //        grid[x, y].validNumber = true;
+            //        correctBlocks++;
+            //        counter++;
+            //    }
+            //}
+        }
+
+        public void NewPuzzle()
+        {
+            String line;
+            List<char[]> level = new List<char[]>();
+
+            FileStream fsSource = new FileStream("easy.txt", FileMode.OpenOrCreate, FileAccess.Read);
+            using (StreamReader sr = new StreamReader(fsSource))
             {
-                int x = r.Next(0, 9);
-                int y = r.Next(0, 9);
+                int randomNumber = r.Next(0, 21);
 
-                if (!grid[x, y].revealed)
+                // Skip to random puzzle #0-21
+                for (int i = 0; i < randomNumber*11; i++)
                 {
-                    grid[x, y].number = winningBlockGrid[x][y];
-                    grid[x, y].revealed = true;
-                    grid[x, y].validNumber = true;
-                    correctBlocks++;
-                    counter++;
+                    line = sr.ReadLine();
+                }
+
+               // System.Diagnostics.Debug.WriteLine(line);
+
+
+
+                for (int i = 0; i < 9; i++)
+                {
+                    line = sr.ReadLine();
+                    //List<int> numbers = new List<int>(Array.ConvertAll(line.Split(" "), int.Parse));
+
+               
+                    for (int j = 0; j < 9; j++)
+                    {
+                        if (line[j] != '.')
+                        {
+                            System.Diagnostics.Debug.WriteLine(line[j]);
+                            //grid[i, j].number = (int)line[j];
+                            grid[i, j].number = (int)char.GetNumericValue(line[j]);
+                            grid[i, j].revealed = true;
+                            grid[i, j].validNumber = true;
+                            correctBlocks++;
+                        }
+                        else
+                        {
+                            grid[i, j].number = 0;
+                            grid[i, j].revealed = false;
+                            grid[i, j].validNumber = true;
+                        }
+         
+                    }
+
+                        
+
+
+                        //if (numbers[1] == 1)
+                        //{
+                        //    grid[column, row].revealed = true;
+                        //}
+                        //else
+                        //{
+                        //    grid[column, row].revealed = false;
+                        //}
+
+                        //if (numbers[2] == 1)
+                        //{
+                        //    grid[column, row].validNumber = true;
+                        //    correctBlocks++;
+                        //}
+                        //else
+                        //{
+                        //    grid[column, row].validNumber = false;
+                        //}
+
+                        //for (int i = 3; i < numbers.Count; i++)
+                        //{
+                        //    grid[column, row].candidates.Add(numbers[i]);
+
+                        //    System.Diagnostics.Debug.WriteLine(i);
+                        //}
+
+                    
                 }
             }
         }
@@ -325,12 +407,12 @@ namespace Sudoku_CS
             }
         }
 
-        public void LoadBoard()
+        public void LoadBoardFromTextfile()
         {
             String line;
             List<char[]> level = new List<char[]>();
 
-            FileStream fsSource = new FileStream("savedBoard.txt", FileMode.Open, FileAccess.Read);
+            FileStream fsSource = new FileStream("savedBoard.txt", FileMode.OpenOrCreate, FileAccess.Read);
             using (StreamReader sr = new StreamReader(fsSource))
             {
 
@@ -379,6 +461,7 @@ namespace Sudoku_CS
         {
             StreamWriter sw = new StreamWriter("savedBoard.txt");  //FileStream("savedBoard.txt", FileMode.Open, FileAccess.Write);
 
+
             for (int column = 0; column < 9; column++)
             {
                 for (int row = 0; row < 9; row++)
@@ -408,7 +491,6 @@ namespace Sudoku_CS
                     sw.WriteLine(line);
                 }
             }
-
 
             sw.Close();
 
