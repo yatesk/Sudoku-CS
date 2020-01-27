@@ -87,7 +87,7 @@
 /processorParam:TextureFormat=Color
 /build:revealedBlock.png
 
-#begin selectedBlock.png
+#begin savePuzzle.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -97,5 +97,5 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:selectedBlock.png
+/build:savePuzzle.png
 

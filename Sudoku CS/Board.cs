@@ -16,7 +16,7 @@ namespace Sudoku_CS
         // Easy = 38. Medium = 30. Hard = 24
         public enum Difficulty { Easy = 38, Medium = 30, Hard = 24 };
 
-        public int blocksRevealed = (int)Difficulty.Easy;
+        public int blocksRevealed = 38; // (int)Difficulty.Easy;
         public int correctBlocks = 0;
         public Block[,] grid = new Block[9, 9];
         public List<int[]> winningBlockGrid = new List<int[]>();
@@ -25,6 +25,7 @@ namespace Sudoku_CS
         public Vector2 backgroundPosition;
 
         public Texture2D newPuzzleImage;
+        public Texture2D savePuzzleImage;
 
         public Texture2D pauseImage;
 
@@ -73,28 +74,30 @@ namespace Sudoku_CS
                         gridMarginY += (3 * j) + 6;
                     }
 
-                    grid[i, j] = new Block(new Vector2((i * 84) + boardBoarder + gridMarginX, boardBoarder + (j * 84) + gridMarginY), Block.BlockBackground.None, 0);
+                    grid[i, j] = new Block(new Vector2((i * 84) + boardBoarder + gridMarginX, boardBoarder + (j * 84) + gridMarginY), false, 0);
                 }
             }
 
-            NewWinningGrid();
 
-            int counter = 0;
+            LoadBoard();
+            //NewWinningGrid();
 
-            while (counter < blocksRevealed)
-            {
-                int x = r.Next(0, 9);
-                int y = r.Next(0, 9);
+            //int counter = 0;
 
-                if (grid[x, y].background != Block.BlockBackground.Revealed)
-                {
-                    grid[x, y].number = winningBlockGrid[x][y];
-                    grid[x, y].background = Block.BlockBackground.Revealed;
-                    grid[x, y].validNumber = true;
-                    correctBlocks++;
-                    counter++;
-                }
-            }
+            //while (counter < blocksRevealed)
+            //{
+            //    int x = r.Next(0, 9);
+            //    int y = r.Next(0, 9);
+
+            //    if (!grid[x, y].revealed)
+            //    {
+            //        grid[x, y].number = winningBlockGrid[x][y];
+            //        grid[x, y].revealed = true;
+            //        grid[x, y].validNumber = true;
+            //        correctBlocks++;
+            //        counter++;
+            //    }
+            //}
 
             LoadContent();
         }
@@ -161,6 +164,7 @@ namespace Sudoku_CS
         {
             backgroundImage = content.Load<Texture2D>("background");
             newPuzzleImage = content.Load<Texture2D>("newPuzzle");
+            savePuzzleImage = content.Load<Texture2D>("savePuzzle");
 
             pauseImage = content.Load<Texture2D>("pause");
 
@@ -206,15 +210,49 @@ namespace Sudoku_CS
                 spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":" + (time % 60).ToString(), new Vector2(850, 50), Color.Black);
             }
 
-            spriteBatch.Draw(pauseImage, new Vector2(890, 53));
+            spriteBatch.Draw(pauseImage, new Vector2(900, 53));
 
             spriteBatch.Draw(newPuzzleImage, new Vector2(850, 800));
+            spriteBatch.Draw(savePuzzleImage, new Vector2(850, 150));
 
         }
 
         public void NewGame()
         {
             timer = 0f;
+
+            correctBlocks = 0;
+
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    grid[i, j].number = 0;
+                    grid[i, j].revealed = false;
+                    grid[i, j].validNumber = false;
+                    grid[i, j].candidates.Clear();
+                }
+            }
+
+
+            NewWinningGrid();
+
+            int counter = 0;
+
+            while (counter < blocksRevealed)
+            {
+                int x = r.Next(0, 9);
+                int y = r.Next(0, 9);
+
+                if (!grid[x, y].revealed)
+                {
+                    grid[x, y].number = winningBlockGrid[x][y];
+                    grid[x, y].revealed = true;
+                    grid[x, y].validNumber = true;
+                    correctBlocks++;
+                    counter++;
+                }
+            }
         }
 
         public void ValidOrInvalidNumber(int _x, int _y)
@@ -285,6 +323,95 @@ namespace Sudoku_CS
                     grid[_x, _y].validNumber = true;
                 }
             }
+        }
+
+        public void LoadBoard()
+        {
+            String line;
+            List<char[]> level = new List<char[]>();
+
+            FileStream fsSource = new FileStream("savedBoard.txt", FileMode.Open, FileAccess.Read);
+            using (StreamReader sr = new StreamReader(fsSource))
+            {
+
+                for (int column = 0; column < 9; column++)
+                {
+                    for (int row = 0; row < 9; row++)
+                    {
+                        line = sr.ReadLine();
+                        List<int> numbers = new List<int>(Array.ConvertAll(line.Split(' '), int.Parse));
+
+                        grid[column, row].number = numbers[0];
+
+
+                        if (numbers[1] == 1)
+                        {
+                            grid[column, row].revealed = true;
+                        }
+                        else
+                        {
+                            grid[column, row].revealed = false;
+                        }
+
+                        if (numbers[2] == 1)
+                        {
+                            grid[column, row].validNumber = true;
+                            correctBlocks++;
+                        }
+                        else
+                        {
+                            grid[column, row].validNumber = false;
+                        }
+
+                        for (int i = 3; i < numbers.Count; i++)
+                        {
+                            grid[column, row].candidates.Add(numbers[i]);
+
+                            System.Diagnostics.Debug.WriteLine(i);
+                        }
+
+                    }
+                }
+            }
+        }
+
+        public void SaveBoard()
+        {
+            StreamWriter sw = new StreamWriter("savedBoard.txt");  //FileStream("savedBoard.txt", FileMode.Open, FileAccess.Write);
+
+            for (int column = 0; column < 9; column++)
+            {
+                for (int row = 0; row < 9; row++)
+                {
+                    string line = "";
+                    line += grid[column, row].number + " ";
+
+                    if (grid[column, row].revealed)
+                        line += 1;
+                    else
+                        line += 0;
+
+                    line += " ";
+
+                    if (grid[column, row].validNumber)
+                        line += 1;
+                    else
+                        line += 0;
+
+
+                    foreach (int candidate in grid[column, row].candidates)
+                    {
+                        line += " ";
+                        line += candidate;
+                    }
+
+                    sw.WriteLine(line);
+                }
+            }
+
+
+            sw.Close();
+
         }
 
         private int[] FindSubGrid(int x, int y)

@@ -98,15 +98,29 @@ namespace Sudoku_CS
             else if ((currentMState.LeftButton == ButtonState.Pressed && lastMState.LeftButton == ButtonState.Released))
             {
                 //// Check pause button
-                if (currentMState.X >= 890 && currentMState.X <= 906 && currentMState.Y >= 53 && currentMState.Y <= 69)
+                if (currentMState.X >= 900 && currentMState.X <= 916 && currentMState.Y >= 53 && currentMState.Y <= 69)
                     if (board.isPaused)
                         board.isPaused = false;
                     else
                         board.isPaused = true;
+                // check save button
+                else if (currentMState.X >= 850 && currentMState.X <= 1000 && currentMState.Y >= 150 && currentMState.Y <= 200)
+                {
+                    System.Diagnostics.Debug.WriteLine("saved");
+                    board.SaveBoard();
+                }
+                // check new puzzle button
+                else if (currentMState.X >= 850 && currentMState.X <= 1000 && currentMState.Y >= 800 && currentMState.Y <= 850)
+                {
+                    board.NewGame();
+                }
+
+
+
 
                 clickedBlock = Block.WhichBlock(currentMState.X, currentMState.Y);
 
-                if (clickedBlock.Item1 != -1 && !board.isPaused && board.grid[clickedBlock.Item1, clickedBlock.Item2].background != Block.BlockBackground.Revealed)
+                if (clickedBlock.Item1 != -1 && !board.isPaused && board.grid[clickedBlock.Item1, clickedBlock.Item2].revealed != true)
                 {
                     board.grid[clickedBlock.Item1, clickedBlock.Item2].ChangeNumberWithMouse(currentMState.X, currentMState.Y);
                     board.ValidOrInvalidNumber(clickedBlock.Item1, clickedBlock.Item2);
@@ -116,7 +130,7 @@ namespace Sudoku_CS
             {
                 clickedBlock = Block.WhichBlock(currentMState.X, currentMState.Y);
 
-                if (clickedBlock.Item1 != -1 && board.grid[clickedBlock.Item1, clickedBlock.Item2].background != Block.BlockBackground.Revealed)
+                if (clickedBlock.Item1 != -1 && board.grid[clickedBlock.Item1, clickedBlock.Item2].revealed != true)
                 { 
                     board.grid[clickedBlock.Item1, clickedBlock.Item2].number = 0;
                     board.ValidOrInvalidNumber(clickedBlock.Item1, clickedBlock.Item2);
@@ -205,8 +219,6 @@ namespace Sudoku_CS
             // checks to see if player won
             if (board.correctBlocks == 81)
             {
-                board.isPaused = true;
-
                 spriteBatch.DrawString(Block.numberFont, "YOU", new Vector2(800, 400), Color.Black);
                 spriteBatch.DrawString(Block.numberFont, "WON", new Vector2(800, 475), Color.Black);
             }

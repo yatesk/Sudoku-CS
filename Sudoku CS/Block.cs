@@ -22,9 +22,9 @@ namespace Sudoku_CS
 
         public List<int> candidates = new List<int>();
 
-        public enum BlockBackground { None, Revealed, };
+        public bool revealed;
 
-        public BlockBackground background;
+        //public BlockBackground background;
         public Vector2 position;
 
         // better way?  Used to determine which grid block is clicked.
@@ -32,10 +32,11 @@ namespace Sudoku_CS
 
         public static int Size = 84;
 
-        public Block(Vector2 _position, BlockBackground _background, int _number = 0)
+        //public Block(Vector2 _position, BlockBackground _background, int _number = 0)
+        public Block(Vector2 _position, bool _revealed, int _number = 0)
         {
             position = _position;
-            background = _background;
+            revealed = _revealed;
             number = _number;
             validNumber = false;
         }
@@ -43,7 +44,7 @@ namespace Sudoku_CS
         // Draw Text Number, canadidate numbers, and background color.
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (background == BlockBackground.Revealed)
+            if (revealed == true)
             {
                 spriteBatch.Draw(revealedBlockImage, position);
             }
