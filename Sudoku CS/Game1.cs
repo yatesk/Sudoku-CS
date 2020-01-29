@@ -108,8 +108,13 @@ namespace Sudoku_CS
                 {
                     board.newPuzzle = true;
                 }
+                // check ny times button
+                else if (currentMState.X >= 850 && currentMState.X <= 1000 && currentMState.Y >= 700 && currentMState.Y <= 750)
+                {
+                    board.newNYTimesPuzzle = true;
+                }
                 // check puzzle difficulty button
-                else if (currentMState.X >= 850 && currentMState.X <= 1000 && currentMState.Y >= 500 && currentMState.Y <= 650 && board.newPuzzle)
+                else if (currentMState.X >= 850 && currentMState.X <= 1000 && currentMState.Y >= 500 && currentMState.Y <= 650 && (board.newPuzzle || board.newNYTimesPuzzle))
                 {
                     if (currentMState.Y >= 500 && currentMState.Y <= 550)
                     {
@@ -124,8 +129,16 @@ namespace Sudoku_CS
                         board.difficulty = "Hard";
                     }
 
-                    board.NewGame();
-                    board.newPuzzle = false;
+                    if (board.newPuzzle)
+                    {
+                        board.NewGame();
+                        board.newPuzzle = false;
+                    }
+                    else if(board.newNYTimesPuzzle)
+                    {
+                        board.GetNYTimesPuzzle();  // refactor
+                        board.newNYTimesPuzzle = false;
+                    }
                 }
 
                 clickedBlock = Block.WhichBlock(currentMState.X, currentMState.Y);

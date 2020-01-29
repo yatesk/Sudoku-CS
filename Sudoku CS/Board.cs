@@ -5,6 +5,8 @@ using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
 
+using System.Net;
+
 namespace Sudoku_CS
 {
     class Board
@@ -24,12 +26,15 @@ namespace Sudoku_CS
         public Texture2D newPuzzleImage;
         public Texture2D savePuzzleImage;
         public Texture2D difficultiesImage;
+        public Texture2D nyTimesImage;
 
         public Texture2D pauseImage;
 
         public float timer = 0f;
         public bool isPaused = false;
+
         public bool newPuzzle = false;
+        public bool newNYTimesPuzzle = false;
 
         private int boardBoarder = 10;
 
@@ -77,7 +82,7 @@ namespace Sudoku_CS
                 }
             }
 
-            LoadBoardFromTextfile();
+            LoadBoardFromSavedTextfile();
             LoadContent();
         }
 
@@ -87,6 +92,7 @@ namespace Sudoku_CS
             newPuzzleImage = content.Load<Texture2D>("newPuzzle");
             savePuzzleImage = content.Load<Texture2D>("savePuzzle");
             difficultiesImage = content.Load<Texture2D>("difficulties");
+            nyTimesImage = content.Load<Texture2D>("nyTimes");
 
             pauseImage = content.Load<Texture2D>("pause");
 
@@ -105,6 +111,8 @@ namespace Sudoku_CS
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            System.Diagnostics.Debug.WriteLine(correctBlocks);
+
             spriteBatch.Draw(backgroundImage, backgroundPosition);
 
             if (!isPaused)
@@ -134,10 +142,11 @@ namespace Sudoku_CS
 
             spriteBatch.Draw(pauseImage, new Vector2(900, 53));
 
+            spriteBatch.Draw(nyTimesImage, new Vector2(850, 700));
             spriteBatch.Draw(newPuzzleImage, new Vector2(850, 800));
             spriteBatch.Draw(savePuzzleImage, new Vector2(850, 150));
 
-            if (newPuzzle)
+            if (newPuzzle || newNYTimesPuzzle)
                 spriteBatch.Draw(difficultiesImage, new Vector2(850, 500));
         }
 
@@ -194,9 +203,8 @@ namespace Sudoku_CS
                         {
                             grid[i, j].number = 0;
                             grid[i, j].revealed = false;
-                            grid[i, j].validNumber = true;
+                            grid[i, j].validNumber = false;
                         }
-         
                     }
                 }
             }
@@ -254,9 +262,9 @@ namespace Sudoku_CS
             if (grid[_x, _y].validNumber)
             {
                 if (!valid)
-                {
-                    correctBlocks--;
-                    grid[_x, _y].validNumber = false;
+                { 
+                correctBlocks--;
+                grid[_x, _y].validNumber = false;
                 }
             }
             else
@@ -269,7 +277,7 @@ namespace Sudoku_CS
             }
         }
 
-        public void LoadBoardFromTextfile()
+        public void LoadBoardFromSavedTextfile()
         {
             String line;
             List<char[]> level = new List<char[]>();
@@ -313,6 +321,83 @@ namespace Sudoku_CS
                             grid[column, row].candidates.Add(numbers[i]);
                         }
                     }
+                }
+            }
+        }
+
+        public void GetNYTimesPuzzle()
+        {
+            string htmlCode = "";
+
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            using (WebClient client = new WebClient())
+            {
+                htmlCode = client.DownloadString("https://www.nytimes.com/puzzles/sudoku/easy");
+            }
+
+            // out of order on nytimes?
+            int indexEasy = htmlCode.IndexOf("\"puzzle\":[");
+            int indexHard = htmlCode.IndexOf("\"puzzle\":[", indexEasy + 161);
+            int indexMedium = htmlCode.IndexOf("\"puzzle\":[", indexHard + 161);
+
+
+            if (difficulty == "Easy")
+            {
+                LoadNYTimesPuzzle(htmlCode.Substring(indexEasy + 10, 161));
+            }
+            else if (difficulty == "Medium")
+            {
+                LoadNYTimesPuzzle(htmlCode.Substring(indexMedium + 10, 161));
+            }
+            else if (difficulty == "Hard")
+            {
+                LoadNYTimesPuzzle(htmlCode.Substring(indexHard + 10, 161));
+            }
+        }
+
+        public void LoadNYTimesPuzzle(string puzzle)
+        {
+            // new puzzle refactor
+            timer = 0f;
+            correctBlocks = 0;
+
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    grid[i, j].number = 0;
+                    grid[i, j].revealed = false;
+                    grid[i, j].validNumber = false;
+                    grid[i, j].candidates.Clear();
+                }
+            }
+
+            string[] puzzleNumbers = puzzle.Split(',');
+            int index = 0;
+
+            //System.Diagnostics.Debug.WriteLine(puzzleNumbers);
+
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    int number = Int32.Parse(puzzleNumbers[index]);
+
+                    if (number != 0)
+                    {
+                        grid[j, i].number = number;   //(int)char.GetNumericValue(line[j]);
+                        grid[j, i].revealed = true;
+                        grid[j, i].validNumber = true;
+                        correctBlocks++;
+                    }
+                    else
+                    {
+                        grid[j, i].number = 0;
+                        grid[j, i].revealed = false;
+                        grid[j, i].validNumber = false;
+                    }
+                    index++;
                 }
             }
         }

@@ -51,7 +51,7 @@ namespace Sudoku_CS
                 spriteBatch.DrawString(numberFont, number.ToString(), new Vector2(position.X + 20, position.Y + 2), Color.Black);
 
                 // Draws red circle if the number is invalid.
-                if (!validNumber)
+                if (!validNumber && number != 0)
                 {
                     spriteBatch.Draw(invalidNumberImage, new Vector2(position.X + Size - 24, position.Y + Size - 24));
                 }
