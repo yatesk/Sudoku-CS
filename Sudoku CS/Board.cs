@@ -12,12 +12,8 @@ namespace Sudoku_CS
         ContentManager content;
         Random r = new Random();
 
-        // Easy = 36+ blocks revealed. Medium = 27-36 blocks revealed. Hard = 19-26 blocks revealed.
-        //public enum Difficulty { Easy = 38, Medium = 30, Hard = 24 };
-
         public string difficulty = "Easy";
 
-        //public int blocksRevealed = 38; // (int)Difficulty.Easy;
         public int correctBlocks = 0;
         public Block[,] grid = new Block[9, 9];
         public List<int[]> winningBlockGrid = new List<int[]>();
@@ -82,84 +78,7 @@ namespace Sudoku_CS
             }
 
             LoadBoardFromTextfile();
-            //NewWinningGrid();
-
-            //int counter = 0;
-
-            //while (counter < blocksRevealed)
-            //{
-            //    int x = r.Next(0, 9);
-            //    int y = r.Next(0, 9);
-
-            //    if (!grid[x, y].revealed)
-            //    {
-            //        grid[x, y].number = winningBlockGrid[x][y];
-            //        grid[x, y].revealed = true;
-            //        grid[x, y].validNumber = true;
-            //        correctBlocks++;
-            //        counter++;
-            //    }
-            //}
-
             LoadContent();
-        }
-
-        public void NewWinningGrid()
-        {
-            HashSet<int> randomNumbersRowSeed = new HashSet<int>();
-
-            for (int i = 1; i < 10; i++)
-                while (!randomNumbersRowSeed.Add(r.Next(1, 10))) ;
-
-            int[] randomNumbersRow = new int[randomNumbersRowSeed.Count];
-            randomNumbersRowSeed.CopyTo(randomNumbersRow);
-
-            winningBlockGrid = SeedRowToWinningBoard(randomNumbersRow);
-        }
-
-        public List<int[]> SeedRowToWinningBoard(int[] seedRow)
-        {
-            List<int[]> winningBlockGrid = new List<int[]>();
-
-            winningBlockGrid.Add(seedRow);
-
-            seedRow = ShiftRowBy(seedRow, 3);
-            winningBlockGrid.Add(seedRow);
-
-            seedRow = ShiftRowBy(seedRow, 3);
-            winningBlockGrid.Add(seedRow);
-
-            seedRow = ShiftRowBy(seedRow, 1);
-            winningBlockGrid.Add(seedRow);
-
-            seedRow = ShiftRowBy(seedRow, 3);
-            winningBlockGrid.Add(seedRow);
-
-            seedRow = ShiftRowBy(seedRow, 3);
-            winningBlockGrid.Add(seedRow);
-
-            seedRow = ShiftRowBy(seedRow, 1);
-            winningBlockGrid.Add(seedRow);
-
-            seedRow = ShiftRowBy(seedRow, 3);
-            winningBlockGrid.Add(seedRow);
-
-            seedRow = ShiftRowBy(seedRow, 3);
-            winningBlockGrid.Add(seedRow);
-
-            return winningBlockGrid;
-        }
-
-        public int[] ShiftRowBy(int[] row, int shift)
-        {
-            int[] newRow = new int[9];
-
-            for (int i = 0; i < 9; i++)
-            {
-                newRow[i] = row[(i + shift) % 9];
-            }
-
-            return newRow;
         }
 
         public void LoadContent()
@@ -240,25 +159,6 @@ namespace Sudoku_CS
             }
 
             NewPuzzle();
-
-            //NewWinningGrid();
-
-            //int counter = 0;
-
-            //while (counter < blocksRevealed)
-            //{
-            //    int x = r.Next(0, 9);
-            //    int y = r.Next(0, 9);
-
-            //    if (!grid[x, y].revealed)
-            //    {
-            //        grid[x, y].number = winningBlockGrid[x][y];
-            //        grid[x, y].revealed = true;
-            //        grid[x, y].validNumber = true;
-            //        correctBlocks++;
-            //        counter++;
-            //    }
-            //}
         }
 
         public void NewPuzzle()
