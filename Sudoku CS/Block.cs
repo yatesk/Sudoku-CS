@@ -17,17 +17,15 @@ namespace Sudoku_CS
 
         public int number;
         public bool validNumber;
-
         public List<int> candidates = new List<int>();
-
         public bool revealed;
 
-        public Vector2 position;
+        private Vector2 position;
 
         // better way?  Used to determine which grid block is clicked.
         public static int[] gridCoords = new int[] { 17, 104, 191, 281, 368, 455, 545, 632, 719, 803 };
 
-        public static int Size = 84;
+        private static int Size = 84;
 
         public Block(Vector2 _position, bool _revealed, int _number = 0)
         {
@@ -70,8 +68,8 @@ namespace Sudoku_CS
             int relativeX = _x - (int)this.position.X;
             int relativeY = _y - (int)this.position.Y;
 
-            int column = 0;
             int row = 0;
+            int column = 0;
 
             if (relativeX < 28)
                 column = 1;

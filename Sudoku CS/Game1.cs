@@ -131,7 +131,7 @@ namespace Sudoku_CS
 
                     if (board.newPuzzle)
                     {
-                        board.NewGame();
+                        board.NewPuzzle();
                         board.newPuzzle = false;
                     }
                     else if(board.newNYTimesPuzzle)
@@ -174,13 +174,6 @@ namespace Sudoku_CS
             spriteBatch.Begin();
 
             board.Draw(spriteBatch);
-
-            // checks to see if player won
-            if (board.correctBlocks == 81)
-            {
-                spriteBatch.DrawString(Block.numberFont, "YOU", new Vector2(800, 400), Color.Black);
-                spriteBatch.DrawString(Block.numberFont, "WON", new Vector2(800, 475), Color.Black);
-            }
 
             spriteBatch.End();
             base.Draw(gameTime);

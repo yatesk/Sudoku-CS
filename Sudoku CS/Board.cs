@@ -11,37 +11,35 @@ namespace Sudoku_CS
 {
     class Board
     {
-        ContentManager content;
-        Random r = new Random();
+        private ContentManager content;
+        private readonly Random r = new Random();
+        private readonly int boardMargin = 10;
 
         public string difficulty = "Easy";
 
-        public int correctBlocks = 0;
+        private int correctBlocks = 0;
         public Block[,] grid = new Block[9, 9];
-        public List<int[]> winningBlockGrid = new List<int[]>();
 
-        public Texture2D backgroundImage;
-        public Vector2 backgroundPosition;
+        private Texture2D backgroundImage;
+        private Vector2 backgroundPosition;
 
-        public Texture2D newPuzzleImage;
-        public Texture2D savePuzzleImage;
-        public Texture2D difficultiesImage;
-        public Texture2D nyTimesImage;
+        private Texture2D newPuzzleImage;
+        private Texture2D savePuzzleImage;
+        private Texture2D difficultiesImage;
+        private Texture2D nyTimesImage;
 
-        public Texture2D pauseImage;
+        private Texture2D pauseImage;
 
-        public float timer = 0f;
+        private float timer = 0f;
         public bool isPaused = false;
 
         public bool newPuzzle = false;
         public bool newNYTimesPuzzle = false;
 
-        private int boardBoarder = 10;
-
         public Board(ContentManager Content)
         {
             content = Content;
-            backgroundPosition = new Vector2(boardBoarder, boardBoarder);
+            backgroundPosition = new Vector2(boardMargin, boardMargin);
 
             // Fill blockGrid
             for (int i = 0; i < 9; i++)
@@ -78,7 +76,7 @@ namespace Sudoku_CS
                         gridMarginY += (3 * j) + 6;
                     }
 
-                    grid[i, j] = new Block(new Vector2((i * 84) + boardBoarder + gridMarginX, boardBoarder + (j * 84) + gridMarginY), false, 0);
+                    grid[i, j] = new Block(new Vector2((i * 84) + boardMargin + gridMarginX, boardMargin + (j * 84) + gridMarginY), false, 0);
                 }
             }
 
@@ -93,26 +91,22 @@ namespace Sudoku_CS
             savePuzzleImage = content.Load<Texture2D>("savePuzzle");
             difficultiesImage = content.Load<Texture2D>("difficulties");
             nyTimesImage = content.Load<Texture2D>("nyTimes");
-
             pauseImage = content.Load<Texture2D>("pause");
 
             Block.revealedBlockImage = content.Load<Texture2D>("revealedBlock");
             Block.invalidNumberImage = content.Load<Texture2D>("invalidNumber");
-
             Block.numberFont = content.Load<SpriteFont>("numberFont");
             Block.candidateFont = content.Load<SpriteFont>("canidateFont");
         }
 
         public void Update(GameTime gameTime)
         {
-            if (!isPaused)
+            if (!isPaused && correctBlocks != 81)
                 timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            System.Diagnostics.Debug.WriteLine(correctBlocks);
-
             spriteBatch.Draw(backgroundImage, backgroundPosition);
 
             if (!isPaused)
@@ -126,9 +120,8 @@ namespace Sudoku_CS
                 spriteBatch.DrawString(Block.numberFont, "PAUSED", new Vector2(375, 375), Color.Black);
 
             //// Draw timer
-            //// refactor
             int time = (int)timer;
-
+           
             if (time % 60 < 10)
             {
                 spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":0" + (time % 60).ToString(), new Vector2(850, 50), Color.Black);
@@ -138,10 +131,16 @@ namespace Sudoku_CS
                 spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":" + (time % 60).ToString(), new Vector2(850, 50), Color.Black);
             }
 
+            // checks to see if player won
+            if (correctBlocks == 81)
+            {
+                spriteBatch.DrawString(Block.numberFont, "YOU", new Vector2(800, 400), Color.Black);
+                spriteBatch.DrawString(Block.numberFont, "WON", new Vector2(800, 475), Color.Black);
+            }
+
             spriteBatch.DrawString(Block.candidateFont, difficulty, new Vector2(850, 0), Color.Black);
 
             spriteBatch.Draw(pauseImage, new Vector2(900, 53));
-
             spriteBatch.Draw(nyTimesImage, new Vector2(850, 700));
             spriteBatch.Draw(newPuzzleImage, new Vector2(850, 800));
             spriteBatch.Draw(savePuzzleImage, new Vector2(850, 150));
@@ -150,7 +149,7 @@ namespace Sudoku_CS
                 spriteBatch.Draw(difficultiesImage, new Vector2(850, 500));
         }
 
-        public void NewGame()
+        public void ClearBoard()
         {
             timer = 0f;
 
@@ -166,12 +165,12 @@ namespace Sudoku_CS
                     grid[i, j].candidates.Clear();
                 }
             }
-
-            NewPuzzle();
         }
 
         public void NewPuzzle()
         {
+            ClearBoard();
+
             String line;
             List<char[]> level = new List<char[]>();
 
