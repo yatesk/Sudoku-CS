@@ -9,17 +9,14 @@ namespace Sudoku_CS
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
-        private Board board;
-
-        private MouseState lastMState;
-        private MouseState currentMState;
-
-        private KeyboardState keyboardState;
-
         private int screenWidth = 1000;
         private int screenHeight = 850;
 
+        private MouseState lastMState;
+        private MouseState currentMState;
+        private KeyboardState keyboardState;
+
+        private Board board;
         private Tuple<int, int> clickedBlock;
 
         public Game1()
@@ -79,18 +76,17 @@ namespace Sudoku_CS
             if (keyboardState.IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (currentMState.RightButton == ButtonState.Pressed && lastMState.RightButton == ButtonState.Released)
+            if (currentMState.RightButton == ButtonState.Pressed && lastMState.RightButton == ButtonState.Released && this.IsActive)
             {
                 clickedBlock = Block.WhichBlock(currentMState.X, currentMState.Y);
 
                 if (clickedBlock.Item1 != -1 && !board.isPaused)
                 {
-
                     if (board.grid[clickedBlock.Item1, clickedBlock.Item2].number == 0)
                         board.grid[clickedBlock.Item1, clickedBlock.Item2].AddOrRemoveCandidate(currentMState.X, currentMState.Y);
                 }
             }
-            else if ((currentMState.LeftButton == ButtonState.Pressed && lastMState.LeftButton == ButtonState.Released))
+            else if (currentMState.LeftButton == ButtonState.Pressed && lastMState.LeftButton == ButtonState.Released && this.IsActive)
             {
                 //// Check pause button
                 if (currentMState.X >= 900 && currentMState.X <= 916 && currentMState.Y >= 53 && currentMState.Y <= 69)
@@ -149,7 +145,7 @@ namespace Sudoku_CS
                     board.ValidOrInvalidNumber(clickedBlock.Item1, clickedBlock.Item2);
                 }
             }
-            else if ((currentMState.MiddleButton == ButtonState.Pressed && lastMState.MiddleButton == ButtonState.Released) && !board.isPaused)
+            else if (currentMState.MiddleButton == ButtonState.Pressed && lastMState.MiddleButton == ButtonState.Released && !board.isPaused && this.IsActive)
             {
                 clickedBlock = Block.WhichBlock(currentMState.X, currentMState.Y);
 

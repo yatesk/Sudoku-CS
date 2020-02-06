@@ -12,8 +12,8 @@ namespace Sudoku_CS
         static public SpriteFont numberFont;
         static public SpriteFont candidateFont;
 
-        static public Texture2D revealedBlockImage;
-        static public Texture2D invalidNumberImage;
+        static private Texture2D revealedBlockImage;
+        static private Texture2D invalidNumberImage;
 
         public int number;
         public bool validNumber;
@@ -127,9 +127,7 @@ namespace Sudoku_CS
             else
                 return;
 
-            int whichNumber = column + (row - 1) * 3;
-
-            number = whichNumber;
+            number = column + (row - 1) * 3;
         }
 
         public static Tuple<int, int> WhichBlock(int _x, int _y)
@@ -162,6 +160,14 @@ namespace Sudoku_CS
             {
                 return new Tuple<int, int>(xIndex, yIndex);
             }
+        }
+
+        public static void LoadContent()
+        {
+            revealedBlockImage = Board.content.Load<Texture2D>("revealedBlock");
+            invalidNumberImage = Board.content.Load<Texture2D>("invalidNumber");
+            numberFont = Board.content.Load<SpriteFont>("numberFont");
+            candidateFont = Board.content.Load<SpriteFont>("canidateFont");
         }
     }
 }

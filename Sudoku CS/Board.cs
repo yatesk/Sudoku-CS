@@ -11,7 +11,7 @@ namespace Sudoku_CS
 {
     class Board
     {
-        private ContentManager content;
+        public static ContentManager content;
         private readonly Random r = new Random();
         private readonly int boardMargin = 10;
 
@@ -93,10 +93,7 @@ namespace Sudoku_CS
             nyTimesImage = content.Load<Texture2D>("nyTimes");
             pauseImage = content.Load<Texture2D>("pause");
 
-            Block.revealedBlockImage = content.Load<Texture2D>("revealedBlock");
-            Block.invalidNumberImage = content.Load<Texture2D>("invalidNumber");
-            Block.numberFont = content.Load<SpriteFont>("numberFont");
-            Block.candidateFont = content.Load<SpriteFont>("canidateFont");
+            Block.LoadContent();
         }
 
         public void Update(GameTime gameTime)
