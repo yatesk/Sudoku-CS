@@ -12,10 +12,8 @@ namespace Sudoku_CS
         private int screenWidth = 1000;
         private int screenHeight = 850;
 
-        private MouseState lastMState;
-        private MouseState currentMState;
         private KeyboardState keyboardState;
-
+        private MouseInput mouseInput;
         private Board board;
         private Tuple<int, int> clickedBlock;
 
@@ -29,6 +27,7 @@ namespace Sudoku_CS
             this.IsMouseVisible = true;
 
             clickedBlock = new Tuple<int, int>(-1, -1);
+            mouseInput = new MouseInput(Mouse.GetState());
         }
 
         /// <summary>
@@ -69,58 +68,57 @@ namespace Sudoku_CS
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            lastMState = currentMState;
-            currentMState = Mouse.GetState();
+            mouseInput.Update(Mouse.GetState());
             keyboardState = Keyboard.GetState();
 
             if (keyboardState.IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (currentMState.RightButton == ButtonState.Pressed && lastMState.RightButton == ButtonState.Released && this.IsActive)
+            if (mouseInput.RightClick() && this.IsActive)
             {
-                clickedBlock = Block.WhichBlock(currentMState.X, currentMState.Y);
+                clickedBlock = Block.WhichBlock(mouseInput.getMouseX(), mouseInput.getMouseY());
 
                 if (clickedBlock.Item1 != -1 && !board.isPaused)
                 {
                     if (board.grid[clickedBlock.Item1, clickedBlock.Item2].number == 0)
-                        board.grid[clickedBlock.Item1, clickedBlock.Item2].AddOrRemoveCandidate(currentMState.X, currentMState.Y);
+                        board.grid[clickedBlock.Item1, clickedBlock.Item2].AddOrRemoveCandidate(mouseInput.getMouseX(), mouseInput.getMouseY());
                 }
             }
-            else if (currentMState.LeftButton == ButtonState.Pressed && lastMState.LeftButton == ButtonState.Released && this.IsActive)
+            else if (mouseInput.LeftClick() && this.IsActive)
             {
                 //// Check pause button
-                if (currentMState.X >= 900 && currentMState.X <= 916 && currentMState.Y >= 53 && currentMState.Y <= 69)
+                if (mouseInput.getMouseX() >= 900 && mouseInput.getMouseX() <= 916 && mouseInput.getMouseY() >= 53 && mouseInput.getMouseY() <= 69)
                     if (board.isPaused)
                         board.isPaused = false;
                     else
                         board.isPaused = true;
                 // check save button
-                else if (currentMState.X >= 850 && currentMState.X <= 1000 && currentMState.Y >= 150 && currentMState.Y <= 200)
+                else if (mouseInput.getMouseX() >= 850 && mouseInput.getMouseX() <= 1000 && mouseInput.getMouseY() >= 150 && mouseInput.getMouseY() <= 200)
                 {
                     board.SaveBoard();
                 }
                 // check new puzzle button
-                else if (currentMState.X >= 850 && currentMState.X <= 1000 && currentMState.Y >= 800 && currentMState.Y <= 850)
+                else if (mouseInput.getMouseX() >= 850 && mouseInput.getMouseX() <= 1000 && mouseInput.getMouseY() >= 800 && mouseInput.getMouseY() <= 850)
                 {
                     board.newPuzzle = true;
                 }
                 // check ny times button
-                else if (currentMState.X >= 850 && currentMState.X <= 1000 && currentMState.Y >= 700 && currentMState.Y <= 750)
+                else if (mouseInput.getMouseX() >= 850 && mouseInput.getMouseX() <= 1000 && mouseInput.getMouseY() >= 700 && mouseInput.getMouseY() <= 750)
                 {
                     board.newNYTimesPuzzle = true;
                 }
                 // check puzzle difficulty button
-                else if (currentMState.X >= 850 && currentMState.X <= 1000 && currentMState.Y >= 500 && currentMState.Y <= 650 && (board.newPuzzle || board.newNYTimesPuzzle))
+                else if (mouseInput.getMouseX() >= 850 && mouseInput.getMouseX() <= 1000 && mouseInput.getMouseY() >= 500 && mouseInput.getMouseY() <= 650 && (board.newPuzzle || board.newNYTimesPuzzle))
                 {
-                    if (currentMState.Y >= 500 && currentMState.Y <= 550)
+                    if (mouseInput.getMouseY() >= 500 && mouseInput.getMouseY() <= 550)
                     {
                         board.difficulty = "Easy";
                     }
-                    else if (currentMState.Y > 550 && currentMState.Y < 600)
+                    else if (mouseInput.getMouseY() > 550 && mouseInput.getMouseY() < 600)
                     {
                         board.difficulty = "Medium";
                     }
-                    else if (currentMState.Y >= 600 && currentMState.Y <= 650)
+                    else if (mouseInput.getMouseY() >= 600 && mouseInput.getMouseY() <= 650)
                     {
                         board.difficulty = "Hard";
                     }
@@ -130,27 +128,27 @@ namespace Sudoku_CS
                         board.NewPuzzle();
                         board.newPuzzle = false;
                     }
-                    else if(board.newNYTimesPuzzle)
+                    else if (board.newNYTimesPuzzle)
                     {
                         board.GetNYTimesPuzzle();  // refactor
                         board.newNYTimesPuzzle = false;
                     }
                 }
 
-                clickedBlock = Block.WhichBlock(currentMState.X, currentMState.Y);
+                clickedBlock = Block.WhichBlock(mouseInput.getMouseX(), mouseInput.getMouseY());
 
                 if (clickedBlock.Item1 != -1 && !board.isPaused && board.grid[clickedBlock.Item1, clickedBlock.Item2].revealed != true)
                 {
-                    board.grid[clickedBlock.Item1, clickedBlock.Item2].ChangeNumberWithMouse(currentMState.X, currentMState.Y);
+                    board.grid[clickedBlock.Item1, clickedBlock.Item2].ChangeNumberWithMouse(mouseInput.getMouseX(), mouseInput.getMouseY());
                     board.ValidOrInvalidNumber(clickedBlock.Item1, clickedBlock.Item2);
                 }
             }
-            else if (currentMState.MiddleButton == ButtonState.Pressed && lastMState.MiddleButton == ButtonState.Released && !board.isPaused && this.IsActive)
+            else if (mouseInput.MiddleClick() && !board.isPaused && this.IsActive)
             {
-                clickedBlock = Block.WhichBlock(currentMState.X, currentMState.Y);
+                clickedBlock = Block.WhichBlock(mouseInput.getMouseX(), mouseInput.getMouseY());
 
                 if (clickedBlock.Item1 != -1 && board.grid[clickedBlock.Item1, clickedBlock.Item2].revealed != true)
-                { 
+                {
                     board.grid[clickedBlock.Item1, clickedBlock.Item2].number = 0;
                     board.ValidOrInvalidNumber(clickedBlock.Item1, clickedBlock.Item2);
                 }
