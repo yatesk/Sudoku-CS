@@ -12,7 +12,6 @@ namespace Sudoku_CS
         private int screenWidth = 1000;
         private int screenHeight = 850;
 
-        private KeyboardState keyboardState;
         private MouseInput mouseInput;
         private Board board;
         private Tuple<int, int> clickedBlock;
@@ -69,9 +68,8 @@ namespace Sudoku_CS
         protected override void Update(GameTime gameTime)
         {
             mouseInput.Update(Mouse.GetState());
-            keyboardState = Keyboard.GetState();
 
-            if (keyboardState.IsKeyDown(Keys.Escape))
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
             if (mouseInput.RightClick() && this.IsActive)
@@ -87,38 +85,38 @@ namespace Sudoku_CS
             else if (mouseInput.LeftClick() && this.IsActive)
             {
                 //// Check pause button
-                if (mouseInput.getMouseX() >= 900 && mouseInput.getMouseX() <= 916 && mouseInput.getMouseY() >= 53 && mouseInput.getMouseY() <= 69)
+                if (board.pauseButton.Clicked(mouseInput.getMouseX(), mouseInput.getMouseY()))
                     if (board.isPaused)
                         board.isPaused = false;
                     else
                         board.isPaused = true;
                 // check save button
-                else if (mouseInput.getMouseX() >= 850 && mouseInput.getMouseX() <= 1000 && mouseInput.getMouseY() >= 150 && mouseInput.getMouseY() <= 200)
+                else if (board.savePuzzleButton.Clicked(mouseInput.getMouseX(), mouseInput.getMouseY()))
                 {
                     board.SaveBoard();
                 }
                 // check new puzzle button
-                else if (mouseInput.getMouseX() >= 850 && mouseInput.getMouseX() <= 1000 && mouseInput.getMouseY() >= 800 && mouseInput.getMouseY() <= 850)
+                else if(board.newPuzzleButton.Clicked(mouseInput.getMouseX(), mouseInput.getMouseY()))
                 {
                     board.newPuzzle = true;
                 }
                 // check ny times button
-                else if (mouseInput.getMouseX() >= 850 && mouseInput.getMouseX() <= 1000 && mouseInput.getMouseY() >= 700 && mouseInput.getMouseY() <= 750)
+                else if (board.nyTimesButton.Clicked(mouseInput.getMouseX(), mouseInput.getMouseY()))
                 {
                     board.newNYTimesPuzzle = true;
                 }
                 // check puzzle difficulty button
-                else if (mouseInput.getMouseX() >= 850 && mouseInput.getMouseX() <= 1000 && mouseInput.getMouseY() >= 500 && mouseInput.getMouseY() <= 650 && (board.newPuzzle || board.newNYTimesPuzzle))
+                else if ((board.newPuzzle || board.newNYTimesPuzzle) && mouseInput.getMouseX() >= 850 && mouseInput.getMouseX() <= 1000 && mouseInput.getMouseY() >= 500 && mouseInput.getMouseY() <= 650)
                 {
-                    if (mouseInput.getMouseY() >= 500 && mouseInput.getMouseY() <= 550)
+                    if (mouseInput.getMouseY() <= 550)
                     {
                         board.difficulty = "Easy";
                     }
-                    else if (mouseInput.getMouseY() > 550 && mouseInput.getMouseY() < 600)
+                    else if (mouseInput.getMouseY() <= 600)
                     {
                         board.difficulty = "Medium";
                     }
-                    else if (mouseInput.getMouseY() >= 600 && mouseInput.getMouseY() <= 650)
+                    else if (mouseInput.getMouseY() <= 650)
                     {
                         board.difficulty = "Hard";
                     }

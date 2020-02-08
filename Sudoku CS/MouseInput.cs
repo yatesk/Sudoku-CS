@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework.Input;
 
 namespace Sudoku_CS
 {
@@ -11,7 +6,6 @@ namespace Sudoku_CS
     {
         private static MouseState currentMouseState;
         private static MouseState previousMouseState;
-    
 
         public MouseInput(MouseState mouseState)
         {

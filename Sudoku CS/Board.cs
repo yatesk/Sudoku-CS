@@ -23,12 +23,7 @@ namespace Sudoku_CS
         private Texture2D backgroundImage;
         private Vector2 backgroundPosition;
 
-        private Texture2D newPuzzleImage;
-        private Texture2D savePuzzleImage;
         private Texture2D difficultiesImage;
-        private Texture2D nyTimesImage;
-
-        private Texture2D pauseImage;
 
         private float timer = 0f;
         public bool isPaused = false;
@@ -36,9 +31,16 @@ namespace Sudoku_CS
         public bool newPuzzle = false;
         public bool newNYTimesPuzzle = false;
 
-        public Board(ContentManager Content)
+        public Button newPuzzleButton;
+        public Button savePuzzleButton;
+        public Button nyTimesButton;
+
+        public Button pauseButton;
+       
+
+        public Board(ContentManager _content)
         {
-            content = Content;
+            content = _content;
             backgroundPosition = new Vector2(boardMargin, boardMargin);
 
             // Fill blockGrid
@@ -80,6 +82,12 @@ namespace Sudoku_CS
                 }
             }
 
+            newPuzzleButton = new Button("test", "buttonFont", new Vector2(850, 800), "New Puzzle", Color.Black, content);
+            savePuzzleButton = new Button("test", "buttonFont", new Vector2(850, 150), "Save", Color.Black, content);
+            nyTimesButton = new Button("test", "buttonFont", new Vector2(850, 700), "NY Times", Color.Black, content);
+
+            pauseButton = new Button("pause", new Vector2(900, 53), content);
+
             LoadBoardFromSavedTextfile();
             LoadContent();
         }
@@ -87,11 +95,7 @@ namespace Sudoku_CS
         public void LoadContent()
         {
             backgroundImage = content.Load<Texture2D>("background");
-            newPuzzleImage = content.Load<Texture2D>("newPuzzle");
-            savePuzzleImage = content.Load<Texture2D>("savePuzzle");
             difficultiesImage = content.Load<Texture2D>("difficulties");
-            nyTimesImage = content.Load<Texture2D>("nyTimes");
-            pauseImage = content.Load<Texture2D>("pause");
 
             Block.LoadContent();
         }
@@ -105,7 +109,7 @@ namespace Sudoku_CS
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(backgroundImage, backgroundPosition);
-
+          
             if (!isPaused)
             {
                 // Draw grid
@@ -114,7 +118,13 @@ namespace Sudoku_CS
                         grid[i, j].Draw(spriteBatch);
             }
             else
-                spriteBatch.DrawString(Block.numberFont, "PAUSED", new Vector2(375, 375), Color.Black);
+            {
+                // Displays "PAUSED" at the center of the game board.
+                float x = boardMargin + grid[4,4].position.X + (Block.Size / 2) - (Block.numberFont.MeasureString("PAUSED").X / 2);
+                float y = boardMargin + grid[4,4].position.Y + (Block.Size / 2) - (Block.numberFont.MeasureString("PAUSED").Y / 2);
+
+                spriteBatch.DrawString(Block.numberFont, "PAUSED", new Vector2(x, y), Color.Black);
+            }
 
             //// Draw timer
             int time = (int)timer;
@@ -137,10 +147,10 @@ namespace Sudoku_CS
 
             spriteBatch.DrawString(Block.candidateFont, difficulty, new Vector2(850, 0), Color.Black);
 
-            spriteBatch.Draw(pauseImage, new Vector2(900, 53));
-            spriteBatch.Draw(nyTimesImage, new Vector2(850, 700));
-            spriteBatch.Draw(newPuzzleImage, new Vector2(850, 800));
-            spriteBatch.Draw(savePuzzleImage, new Vector2(850, 150));
+            newPuzzleButton.Draw(spriteBatch);
+            savePuzzleButton.Draw(spriteBatch);
+            nyTimesButton.Draw(spriteBatch);
+            pauseButton.Draw(spriteBatch);
 
             if (newPuzzle || newNYTimesPuzzle)
                 spriteBatch.Draw(difficultiesImage, new Vector2(850, 500));
@@ -149,7 +159,6 @@ namespace Sudoku_CS
         public void ClearBoard()
         {
             timer = 0f;
-
             correctBlocks = 0;
 
             for (int i = 0; i < 9; i++)
@@ -372,8 +381,6 @@ namespace Sudoku_CS
             string[] puzzleNumbers = puzzle.Split(',');
             int index = 0;
 
-            //System.Diagnostics.Debug.WriteLine(puzzleNumbers);
-
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
@@ -382,7 +389,7 @@ namespace Sudoku_CS
 
                     if (number != 0)
                     {
-                        grid[j, i].number = number;   //(int)char.GetNumericValue(line[j]);
+                        grid[j, i].number = number;  
                         grid[j, i].revealed = true;
                         grid[j, i].validNumber = true;
                         correctBlocks++;

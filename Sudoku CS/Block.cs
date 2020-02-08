@@ -20,12 +20,12 @@ namespace Sudoku_CS
         public List<int> candidates = new List<int>();
         public bool revealed;
 
-        private Vector2 position;
+        public Vector2 position;
 
         // better way?  Used to determine which grid block is clicked.
         public static int[] gridCoords = new int[] { 17, 104, 191, 281, 368, 455, 545, 632, 719, 803 };
 
-        private static int Size = 84;
+        public static int Size = 84;
 
         public Block(Vector2 _position, bool _revealed, int _number = 0)
         {
