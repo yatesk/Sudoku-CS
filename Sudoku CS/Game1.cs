@@ -91,6 +91,11 @@ namespace Sudoku_CS
                     else
                         board.isPaused = true;
                 // check save button
+                else if(board.showCandidatesButton.Clicked(mouseInput.getMouseX(), mouseInput.getMouseY()))
+                {
+                    board.ShowCandidates();
+                    
+                }
                 else if (board.savePuzzleButton.Clicked(mouseInput.getMouseX(), mouseInput.getMouseY()))
                 {
                     board.SaveBoard();

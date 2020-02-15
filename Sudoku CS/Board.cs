@@ -36,7 +36,7 @@ namespace Sudoku_CS
         public Button nyTimesButton;
 
         public Button pauseButton;
-       
+        public Button showCandidatesButton;
 
         public Board(ContentManager _content)
         {
@@ -82,11 +82,12 @@ namespace Sudoku_CS
                 }
             }
 
-            newPuzzleButton = new Button("test", "buttonFont", new Vector2(850, 800), "New Puzzle", Color.Black, content);
-            savePuzzleButton = new Button("test", "buttonFont", new Vector2(850, 150), "Save", Color.Black, content);
-            nyTimesButton = new Button("test", "buttonFont", new Vector2(850, 700), "NY Times", Color.Black, content);
+            newPuzzleButton = new Button("basic150-50", "buttonFont", new Vector2(850, 800), "New Puzzle", Color.Black, content);
+            savePuzzleButton = new Button("basic150-50", "buttonFont", new Vector2(850, 150), "Save", Color.Black, content);
+            nyTimesButton = new Button("basic150-50", "buttonFont", new Vector2(850, 700), "NY Times", Color.Black, content);
 
             pauseButton = new Button("pause", new Vector2(900, 53), content);
+            showCandidatesButton = new Button("showCandidate", new Vector2(950, 50), content);
 
             LoadBoardFromSavedTextfile();
             LoadContent();
@@ -151,6 +152,8 @@ namespace Sudoku_CS
             savePuzzleButton.Draw(spriteBatch);
             nyTimesButton.Draw(spriteBatch);
             pauseButton.Draw(spriteBatch);
+
+            showCandidatesButton.Draw(spriteBatch);
 
             if (newPuzzle || newNYTimesPuzzle)
                 spriteBatch.Draw(difficultiesImage, new Vector2(850, 500));
@@ -280,6 +283,9 @@ namespace Sudoku_CS
                     grid[_x, _y].validNumber = true;
                 }
             }
+
+            // MOVE???
+            ShowCandidates();
         }
 
         public void LoadBoardFromSavedTextfile()
@@ -325,6 +331,49 @@ namespace Sudoku_CS
                         {
                             grid[column, row].candidates.Add(numbers[i]);
                         }
+                    }
+                }
+            }
+        }
+
+        public void ShowCandidates()
+        { 
+            // refactor
+            HashSet<int> candidates = new HashSet<int>();
+
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    candidates.Clear();
+                    grid[i, j].AddAllCandidates();
+
+                    for (int column = 0; column < 9; column++)
+                    {
+                        if (grid[column, j].number != 0)
+                            candidates.Add(grid[column, j].number);
+                    }
+
+                    for (int row = 0; row < 9; row++)
+                    {
+                        if (grid[i, row].number != 0)
+                            candidates.Add(grid[i, row].number);
+                    }
+
+                    int[] subGridStartingCoords = FindSubGrid(i, j);
+
+                    for (int column = 0; column < 3; column++)
+                    {
+                        for (int row = 0; row < 3; row++)
+                        {
+                            if (grid[column + subGridStartingCoords[0], row + subGridStartingCoords[1]].number != 0)
+                                candidates.Add(grid[column + subGridStartingCoords[0], row + subGridStartingCoords[1]].number);
+                        }
+                    }
+
+                    foreach (var candidate in candidates)
+                    {
+                        grid[i, j].candidates.Remove(candidate);
                     }
                 }
             }

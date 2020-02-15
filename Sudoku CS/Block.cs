@@ -162,6 +162,15 @@ namespace Sudoku_CS
             }
         }
 
+        public void AddAllCandidates()
+        {
+            for (int i = 1; i < 10; i++)
+            {
+                if (!candidates.Contains(i))
+                    candidates.Add(i);
+            }
+        }
+
         public static void LoadContent()
         {
             revealedBlockImage = Board.content.Load<Texture2D>("revealedBlock");
