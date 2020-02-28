@@ -87,7 +87,7 @@ namespace Sudoku_CS
             nyTimesButton = new Button("basic150-50", "buttonFont", new Vector2(850, 700), "NY Times", Color.Black, content);
 
             pauseButton = new Button("pause", new Vector2(900, 53), content);
-            showCandidatesButton = new Button("showCandidate", new Vector2(950, 50), content);
+            showCandidatesButton = new Button("showCandidate", new Vector2(950, 50), content, true);
 
             LoadBoardFromSavedTextfile();
             LoadContent();
@@ -163,6 +163,7 @@ namespace Sudoku_CS
         {
             timer = 0f;
             correctBlocks = 0;
+            showCandidatesButton.toggle = false;
 
             for (int i = 0; i < 9; i++)
             {
@@ -285,7 +286,9 @@ namespace Sudoku_CS
             }
 
             // MOVE???
-            ShowCandidates();
+            if (showCandidatesButton.toggle)
+                ShowCandidates();
+            
         }
 
         public void LoadBoardFromSavedTextfile()
@@ -337,8 +340,9 @@ namespace Sudoku_CS
         }
 
         public void ShowCandidates()
-        { 
+        {
             // refactor
+            // which candidates to remove
             HashSet<int> candidates = new HashSet<int>();
 
             for (int i = 0; i < 9; i++)
@@ -379,6 +383,9 @@ namespace Sudoku_CS
             }
         }
 
+
+
+
         public void GetNYTimesPuzzle()
         {
             string htmlCode = "";
@@ -412,20 +419,7 @@ namespace Sudoku_CS
 
         public void LoadNYTimesPuzzle(string puzzle)
         {
-            // new puzzle refactor
-            timer = 0f;
-            correctBlocks = 0;
-
-            for (int i = 0; i < 9; i++)
-            {
-                for (int j = 0; j < 9; j++)
-                {
-                    grid[i, j].number = 0;
-                    grid[i, j].revealed = false;
-                    grid[i, j].validNumber = false;
-                    grid[i, j].candidates.Clear();
-                }
-            }
+            ClearBoard();
 
             string[] puzzleNumbers = puzzle.Split(',');
             int index = 0;

@@ -7,8 +7,6 @@ namespace Sudoku_CS
 {
     class Block
     {
-        //System.Diagnostics.Debug.WriteLine(relativeX + " " + relativeY);
-
         static public SpriteFont numberFont;
         static public SpriteFont candidateFont;
 
@@ -65,8 +63,8 @@ namespace Sudoku_CS
 
         public void AddOrRemoveCandidate(int _x, int _y)
         {
-            int relativeX = _x - (int)this.position.X;
-            int relativeY = _y - (int)this.position.Y;
+            int relativeX = _x - (int)position.X;
+            int relativeY = _y - (int)position.Y;
 
             int row = 0;
             int column = 0;

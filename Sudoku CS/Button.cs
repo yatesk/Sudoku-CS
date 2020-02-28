@@ -12,11 +12,15 @@ namespace Sudoku_CS
 
         private string text;
         private Color textColor;
+        private string textureName;
 
         private bool mouseOver;
+        private bool toggleable;
+        public bool toggle;
 
-        public Button(string textureName, string fontName, Vector2 _position, string _text, Color _textColor, ContentManager content)
+        public Button(string _textureName, string fontName, Vector2 _position, string _text, Color _textColor, ContentManager content)
         {
+            textureName = _textureName;
             texture = content.Load<Texture2D>(textureName);
             font = content.Load<SpriteFont>(fontName);
             position = _position;
@@ -24,16 +28,32 @@ namespace Sudoku_CS
             textColor = _textColor;
         }
 
-        public Button(string textureName, Vector2 _position, ContentManager content)
+        public Button(string _textureName, Vector2 _position, ContentManager content)
         {
+            textureName = _textureName;
             texture = content.Load<Texture2D>(textureName);
             position = _position;
+        }
+
+        public Button(string _textureName, Vector2 _position, ContentManager content, bool _toggleable)
+        {
+            textureName = _textureName;
+            texture = content.Load<Texture2D>(textureName);
+            position = _position;
+
+            toggleable = _toggleable;
+            toggle = false;
         }
 
         public bool Clicked(int _x, int _y)
         {
             if (_x >= position.X && _x <= position.X + texture.Width && _y >= position.Y && _y <= position.Y + texture.Height)
+            {
+                if (toggleable)
+                    toggle = !toggle;
+
                 return true;
+            }
             else
                 return false;
         }
@@ -48,7 +68,7 @@ namespace Sudoku_CS
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (mouseOver)
+            if (mouseOver || toggle)
             {
                 spriteBatch.Draw(texture, position, Color.Gray);
             }
@@ -62,6 +82,14 @@ namespace Sudoku_CS
 
                 spriteBatch.DrawString(font, text, new Vector2(x, y), textColor);
             }
+        }
+
+        public string getText()
+        {
+            if (!string.IsNullOrEmpty(text))
+                return text;
+            else
+                return textureName;
         }
     }
 }

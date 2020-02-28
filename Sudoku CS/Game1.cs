@@ -9,12 +9,15 @@ namespace Sudoku_CS
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        private int screenWidth = 1000;
-        private int screenHeight = 850;
+        public static int screenWidth = 1000;
+        public static int screenHeight = 850;
 
         private MouseInput mouseInput;
         private Board board;
         private Tuple<int, int> clickedBlock;
+
+        private State state;
+        private State nextState;
 
         public Game1()
         {
@@ -49,6 +52,10 @@ namespace Sudoku_CS
             board = new Board(Content);
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            state = new MenuState(this, Content);
+
+            nextState = null;
         }
 
         /// <summary>
@@ -67,6 +74,20 @@ namespace Sudoku_CS
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            if (nextState != null)
+            {
+                state = nextState;
+                state.LoadContent();
+
+                nextState = null;
+            }
+
+            state.Update(gameTime);
+
+            base.Update(gameTime);
+
+
+
             mouseInput.Update(Mouse.GetState());
 
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -158,7 +179,7 @@ namespace Sudoku_CS
             }
 
             board.Update(gameTime);
-            base.Update(gameTime);
+            //base.Update(gameTime);
         }
 
         /// <summary>
@@ -172,8 +193,15 @@ namespace Sudoku_CS
 
             board.Draw(spriteBatch);
 
+            state.Draw(gameTime, spriteBatch);
+
             spriteBatch.End();
             base.Draw(gameTime);
+        }
+
+        public void ChangeState(State state)
+        {
+            nextState = state;
         }
     }
 }
