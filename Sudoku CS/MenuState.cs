@@ -52,6 +52,7 @@ namespace Sudoku_CS
                         switch (button.getText())
                         {
                             case "New Puzzle":
+                                game.ChangeState(new NewPuzzleState(game, content));
                                 //buttons.Remove(button);
                                 //buttons.Add(new Button("1player", new Vector2((Game1.screenWidth / 2) - 125, (Game1.screenHeight / 2) - 100), content));
                                 //buttons.Add(new Button("2player", new Vector2((Game1.screenWidth / 2), (Game1.screenHeight / 2) - 100), content));

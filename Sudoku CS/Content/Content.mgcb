@@ -56,12 +56,12 @@
 /processorParam:TextureFormat=Compressed
 /build:ButtonFont.spritefont
 
-#begin canidateFont.spritefont
+#begin candidateFont.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:canidateFont.spritefont
+/build:candidateFont.spritefont
 
 #begin difficulties.png
 /importer:TextureImporter

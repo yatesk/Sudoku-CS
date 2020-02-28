@@ -174,7 +174,7 @@ namespace Sudoku_CS
             revealedBlockImage = Board.content.Load<Texture2D>("revealedBlock");
             invalidNumberImage = Board.content.Load<Texture2D>("invalidNumber");
             numberFont = Board.content.Load<SpriteFont>("numberFont");
-            candidateFont = Board.content.Load<SpriteFont>("canidateFont");
+            candidateFont = Board.content.Load<SpriteFont>("candidateFont");
         }
     }
 }
