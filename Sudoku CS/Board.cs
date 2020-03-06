@@ -13,9 +13,9 @@ namespace Sudoku_CS
     {
         public static ContentManager content;
         private readonly Random r = new Random();
-        private readonly int boardMargin = 10;
+        private readonly int boardMargin = 25;
 
-        public string difficulty = "Easy";
+        //public string difficulty = "Easy";
 
         private int correctBlocks = 0;
         public Block[,] grid = new Block[9, 9];
@@ -38,8 +38,14 @@ namespace Sudoku_CS
         public Button pauseButton;
         public Button showCandidatesButton;
 
-        public Board(ContentManager _content)
+        public string puzzleSource;
+        public string puzzleDifficulty;
+
+        public Board(ContentManager _content, string _source, string _difficulty)
         {
+            puzzleSource = _source;
+            puzzleDifficulty = _difficulty;
+
             content = _content;
             backgroundPosition = new Vector2(boardMargin, boardMargin);
 
@@ -78,6 +84,7 @@ namespace Sudoku_CS
                         gridMarginY += (3 * j) + 6;
                     }
 
+                    System.Diagnostics.Debug.WriteLine((i*84) + boardMargin + gridMarginX);
                     grid[i, j] = new Block(new Vector2((i * 84) + boardMargin + gridMarginX, boardMargin + (j * 84) + gridMarginY), false, 0);
                 }
             }
@@ -86,11 +93,63 @@ namespace Sudoku_CS
             savePuzzleButton = new Button("basic150-50", "buttonFont", new Vector2(850, 150), "Save", Color.Black, content);
             nyTimesButton = new Button("basic150-50", "buttonFont", new Vector2(850, 700), "NY Times", Color.Black, content);
 
-            pauseButton = new Button("pause", new Vector2(900, 53), content);
+            pauseButton = new Button("pause", new Vector2(450, 4), content);
             showCandidatesButton = new Button("showCandidate", new Vector2(950, 50), content, true);
 
-            LoadBoardFromSavedTextfile();
+
+            NewPuzzle2();
+            //LoadBoardFromSavedTextfile();
             LoadContent();
+        }
+
+        public void NewPuzzle2()
+        {
+            ClearBoard();
+
+
+            if (puzzleSource == "NY Times")
+            {
+                GetNYTimesPuzzle();
+            }
+            else if (puzzleSource == "QQ Wing")
+            {
+                String line;
+                List<char[]> level = new List<char[]>();
+
+                FileStream fsSource = new FileStream(puzzleDifficulty + ".txt", FileMode.OpenOrCreate, FileAccess.Read);
+                using (StreamReader sr = new StreamReader(fsSource))
+                {
+                    int randomNumber = r.Next(0, 21);
+
+                    // Skip to random puzzle #0-21
+                    for (int i = 0; i < randomNumber * 11; i++)
+                    {
+                        line = sr.ReadLine();
+                    }
+
+                    for (int i = 0; i < 9; i++)
+                    {
+                        line = sr.ReadLine();
+
+                        for (int j = 0; j < 9; j++)
+                        {
+                            if (line[j] != '.')
+                            {
+                                grid[i, j].number = (int)char.GetNumericValue(line[j]);
+                                grid[i, j].revealed = true;
+                                grid[i, j].validNumber = true;
+                                correctBlocks++;
+                            }
+                            else
+                            {
+                                grid[i, j].number = 0;
+                                grid[i, j].revealed = false;
+                                grid[i, j].validNumber = false;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         public void LoadContent()
@@ -132,11 +191,11 @@ namespace Sudoku_CS
            
             if (time % 60 < 10)
             {
-                spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":0" + (time % 60).ToString(), new Vector2(850, 50), Color.Black);
+                spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":0" + (time % 60).ToString(), new Vector2(405, 0), Color.Black);
             }
             else
             {
-                spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":" + (time % 60).ToString(), new Vector2(850, 50), Color.Black);
+                spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":" + (time % 60).ToString(), new Vector2(405, 0), Color.Black);
             }
 
             // checks to see if player won
@@ -146,17 +205,18 @@ namespace Sudoku_CS
                 spriteBatch.DrawString(Block.numberFont, "WON", new Vector2(800, 475), Color.Black);
             }
 
-            spriteBatch.DrawString(Block.candidateFont, difficulty, new Vector2(850, 0), Color.Black);
+            spriteBatch.DrawString(Block.candidateFont, puzzleDifficulty, new Vector2(boardMargin, 0), Color.Black);
+            spriteBatch.DrawString(Block.candidateFont, puzzleSource, new Vector2(boardMargin + 150, 0), Color.Black);
 
-            newPuzzleButton.Draw(spriteBatch);
+            //newPuzzleButton.Draw(spriteBatch);
             savePuzzleButton.Draw(spriteBatch);
-            nyTimesButton.Draw(spriteBatch);
+            //nyTimesButton.Draw(spriteBatch);
             pauseButton.Draw(spriteBatch);
 
             showCandidatesButton.Draw(spriteBatch);
 
-            if (newPuzzle || newNYTimesPuzzle)
-                spriteBatch.Draw(difficultiesImage, new Vector2(850, 500));
+            //if (newPuzzle || newNYTimesPuzzle)
+             //   spriteBatch.Draw(difficultiesImage, new Vector2(850, 500));
         }
 
         public void ClearBoard()
@@ -184,7 +244,7 @@ namespace Sudoku_CS
             String line;
             List<char[]> level = new List<char[]>();
 
-            FileStream fsSource = new FileStream(difficulty + ".txt", FileMode.OpenOrCreate, FileAccess.Read);
+            FileStream fsSource = new FileStream(puzzleDifficulty + ".txt", FileMode.OpenOrCreate, FileAccess.Read);
             using (StreamReader sr = new StreamReader(fsSource))
             {
                 int randomNumber = r.Next(0, 21);
@@ -299,7 +359,7 @@ namespace Sudoku_CS
             FileStream fsSource = new FileStream("savedBoard.txt", FileMode.OpenOrCreate, FileAccess.Read);
             using (StreamReader sr = new StreamReader(fsSource))
             {
-                difficulty = sr.ReadLine();
+                puzzleDifficulty = sr.ReadLine();
                 timer = float.Parse(sr.ReadLine());
 
                 for (int column = 0; column < 9; column++)
@@ -403,15 +463,15 @@ namespace Sudoku_CS
             int indexMedium = htmlCode.IndexOf("\"puzzle\":[", indexHard + 161);
 
 
-            if (difficulty == "Easy")
+            if (puzzleDifficulty == "Easy")
             {
                 LoadNYTimesPuzzle(htmlCode.Substring(indexEasy + 10, 161));
             }
-            else if (difficulty == "Medium")
+            else if (puzzleDifficulty == "Medium")
             {
                 LoadNYTimesPuzzle(htmlCode.Substring(indexMedium + 10, 161));
             }
-            else if (difficulty == "Hard")
+            else if (puzzleDifficulty == "Hard")
             {
                 LoadNYTimesPuzzle(htmlCode.Substring(indexHard + 10, 161));
             }
@@ -452,7 +512,7 @@ namespace Sudoku_CS
         {
             StreamWriter sw = new StreamWriter("savedBoard.txt");  //FileStream("savedBoard.txt", FileMode.Open, FileAccess.Write);
 
-            sw.WriteLine(difficulty);
+            sw.WriteLine(puzzleDifficulty);
             sw.WriteLine(timer);
 
             for (int column = 0; column < 9; column++)

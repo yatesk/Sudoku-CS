@@ -21,7 +21,7 @@ namespace Sudoku_CS
         public Vector2 position;
 
         // better way?  Used to determine which grid block is clicked.
-        public static int[] gridCoords = new int[] { 17, 104, 191, 281, 368, 455, 545, 632, 719, 803 };
+        public static int[] gridCoords = new int[] { 32, 119, 206, 296, 383, 470, 560, 647, 734, 821 };
 
         public static int Size = 84;
 

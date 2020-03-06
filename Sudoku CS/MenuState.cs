@@ -10,8 +10,8 @@ namespace Sudoku_CS
     {
         private List<Button> buttons;
 
-        MouseState previousMouseState;
-        MouseState currentMouseState;
+        private MouseState previousMouseState;
+        private MouseState currentMouseState;
 
         private SpriteFont buttonFont;
 

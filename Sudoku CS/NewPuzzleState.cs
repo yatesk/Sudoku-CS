@@ -10,8 +10,8 @@ namespace Sudoku_CS
     {
         private List<Button> buttons;
 
-        MouseState previousMouseState;
-        MouseState currentMouseState;
+        private MouseState previousMouseState;
+        private MouseState currentMouseState;
 
         private SpriteFont titleFont;
         private SpriteFont labelFont;
@@ -22,6 +22,9 @@ namespace Sudoku_CS
         {
             title = "New Puzzle";
             LoadContent();
+
+            previousMouseState = Mouse.GetState();
+            currentMouseState = Mouse.GetState();
         }
 
         public override void LoadContent()
@@ -62,15 +65,26 @@ namespace Sudoku_CS
                         {
                             case "Easy":
                                 if (button.getTextColor() == Color.Green) // NY Times
-                                    game.ChangeState(new GameState(game, content));
-                                else if(button.getTextColor() == Color.Blue) // QQ Wong
-                                    game.ChangeState(new GameState(game, content));
+                                    game.ChangeState(new GameState(game, content, "NY Times", "Easy"));
+                                else if (button.getTextColor() == Color.Blue) // QQ Wing
+                                    game.ChangeState(new GameState(game, content, "QQ Wing", "Easy"));
                                 
                                 break;
+                            case "Medium":
+                                game.ChangeState(new GameState(game, content, "NY Times", "Medium"));
+                                break;
+                            case "Hard":
+                                game.ChangeState(new GameState(game, content, "NY Times", "Hard"));
+                                break;
 
-                            case "QQ Wing":
-
-
+                            case "Simple":
+                                game.ChangeState(new GameState(game, content, "QQ Wing", "Simple"));
+                                break;
+                            case "Intermediate":
+                                game.ChangeState(new GameState(game, content, "QQ Wing", "Intermediate"));
+                                break;
+                            case "Expert":
+                                game.ChangeState(new GameState(game, content, "QQ Wing", "Expert"));
                                 break;
 
 
