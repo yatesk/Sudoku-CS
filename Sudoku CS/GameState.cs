@@ -30,6 +30,19 @@ namespace Sudoku_CS
         }
 
 
+        public GameState(Game1 game, ContentManager content, string savedGame) : base(game, content)
+        {
+
+            clickedBlock = new Tuple<int, int>(-1, -1);
+            mouseInput = new MouseInput(Mouse.GetState());
+
+
+            board = new Board(content, savedGame);
+
+
+            LoadContent();
+        }
+
 
         public override void LoadContent()
         {       
@@ -71,43 +84,7 @@ namespace Sudoku_CS
                 {
                     board.SaveBoard();
                 }
-                // check new puzzle button
-                else if (board.newPuzzleButton.Clicked(mouseInput.getMouseX(), mouseInput.getMouseY()))
-                {
-                    board.newPuzzle = true;
-                }
-                // check ny times button
-                else if (board.nyTimesButton.Clicked(mouseInput.getMouseX(), mouseInput.getMouseY()))
-                {
-                    board.newNYTimesPuzzle = true;
-                }
-                // check puzzle difficulty button
-                else if ((board.newPuzzle || board.newNYTimesPuzzle) && mouseInput.getMouseX() >= 850 && mouseInput.getMouseX() <= 1000 && mouseInput.getMouseY() >= 500 && mouseInput.getMouseY() <= 650)
-                {
-                    if (mouseInput.getMouseY() <= 550)
-                    {
-                        board.puzzleDifficulty = "Easy";
-                    }
-                    else if (mouseInput.getMouseY() <= 600)
-                    {
-                        board.puzzleDifficulty = "Medium";
-                    }
-                    else if (mouseInput.getMouseY() <= 650)
-                    {
-                        board.puzzleDifficulty = "Hard";
-                    }
 
-                    if (board.newPuzzle)
-                    {
-                        board.NewPuzzle();
-                        board.newPuzzle = false;
-                    }
-                    else if (board.newNYTimesPuzzle)
-                    {
-                        board.GetNYTimesPuzzle();  // refactor
-                        board.newNYTimesPuzzle = false;
-                    }
-                }
 
                 clickedBlock = Block.WhichBlock(mouseInput.getMouseX(), mouseInput.getMouseY());
 

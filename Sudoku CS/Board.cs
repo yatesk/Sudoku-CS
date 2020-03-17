@@ -13,9 +13,7 @@ namespace Sudoku_CS
     {
         public static ContentManager content;
         private readonly Random r = new Random();
-        private readonly int boardMargin = 25;
-
-        //public string difficulty = "Easy";
+        private readonly int boardMargin = 35;
 
         private int correctBlocks = 0;
         public Block[,] grid = new Block[9, 9];
@@ -32,16 +30,17 @@ namespace Sudoku_CS
         public bool newNYTimesPuzzle = false;
 
         public Button newPuzzleButton;
-        public Button savePuzzleButton;
         public Button nyTimesButton;
 
         public Button pauseButton;
         public Button showCandidatesButton;
 
+        public Button savePuzzleButton;
+
         public string puzzleSource;
         public string puzzleDifficulty;
 
-        public Board(ContentManager _content, string _source, string _difficulty)
+        public Board(ContentManager _content, string _source = "", string _difficulty = "")
         {
             puzzleSource = _source;
             puzzleDifficulty = _difficulty;
@@ -89,23 +88,72 @@ namespace Sudoku_CS
                 }
             }
 
-            newPuzzleButton = new Button("basic150-50", "buttonFont", new Vector2(850, 800), "New Puzzle", Color.Black, content);
-            savePuzzleButton = new Button("basic150-50", "buttonFont", new Vector2(850, 150), "Save", Color.Black, content);
-            nyTimesButton = new Button("basic150-50", "buttonFont", new Vector2(850, 700), "NY Times", Color.Black, content);
+            savePuzzleButton = new Button("save", new Vector2(700, 0), content, false);
+            pauseButton = new Button("pause", new Vector2(455, 4), content);
+            showCandidatesButton = new Button("showCandidate", new Vector2(775, 0), content, true);
 
-            pauseButton = new Button("pause", new Vector2(450, 4), content);
-            showCandidatesButton = new Button("showCandidate", new Vector2(950, 50), content, true);
-
-
-            NewPuzzle2();
-            //LoadBoardFromSavedTextfile();
+            NewPuzzle();
             LoadContent();
         }
 
-        public void NewPuzzle2()
+        public Board(ContentManager _content, string _savedGame)
+        {
+            if (_savedGame == "Load Save")
+            {
+                content = _content;
+                backgroundPosition = new Vector2(boardMargin, boardMargin);
+
+                // Fill blockGrid
+                for (int i = 0; i < 9; i++)
+                {
+                    for (int j = 0; j < 9; j++)
+                    {
+                        int gridMarginX = 7;
+                        int gridMarginY = 7;
+
+                        // better way?
+                        if (i < 3)
+                        {
+                            gridMarginX += 3 * i;
+                        }
+                        else if (i < 6)
+                        {
+                            gridMarginX += (3 * i) + 3;  // subgrid margin - Block margin = 3
+                        }
+                        else if (i < 9)
+                        {
+                            gridMarginX += (3 * i) + 6;  // (subgrid margin - Block margin) * 2 = 6
+                        }
+
+                        if (j < 3)
+                        {
+                            gridMarginY += 3 * j;
+                        }
+                        else if (j < 6)
+                        {
+                            gridMarginY += (3 * j) + 3;
+                        }
+                        else if (j < 9)
+                        {
+                            gridMarginY += (3 * j) + 6;
+                        }
+
+                        grid[i, j] = new Block(new Vector2((i * 84) + boardMargin + gridMarginX, boardMargin + (j * 84) + gridMarginY), false, 0);
+                    }
+                }
+
+                savePuzzleButton = new Button("save", new Vector2(700, 0), content, false);
+                pauseButton = new Button("pause", new Vector2(455, 4), content);
+                showCandidatesButton = new Button("showCandidate", new Vector2(950, 50), content, true);
+
+                LoadContent();
+                LoadBoardFromSavedTextfile();
+            }
+        }
+
+        public void NewPuzzle()
         {
             ClearBoard();
-
 
             if (puzzleSource == "NY Times")
             {
@@ -208,15 +256,10 @@ namespace Sudoku_CS
             spriteBatch.DrawString(Block.candidateFont, puzzleDifficulty, new Vector2(boardMargin, 0), Color.Black);
             spriteBatch.DrawString(Block.candidateFont, puzzleSource, new Vector2(boardMargin + 150, 0), Color.Black);
 
-            //newPuzzleButton.Draw(spriteBatch);
-            savePuzzleButton.Draw(spriteBatch);
-            //nyTimesButton.Draw(spriteBatch);
             pauseButton.Draw(spriteBatch);
 
+            savePuzzleButton.Draw(spriteBatch);
             showCandidatesButton.Draw(spriteBatch);
-
-            //if (newPuzzle || newNYTimesPuzzle)
-             //   spriteBatch.Draw(difficultiesImage, new Vector2(850, 500));
         }
 
         public void ClearBoard()
@@ -237,47 +280,47 @@ namespace Sudoku_CS
             }
         }
 
-        public void NewPuzzle()
-        {
-            ClearBoard();
+        //public void NewPuzzle()
+        //{
+        //    ClearBoard();
 
-            String line;
-            List<char[]> level = new List<char[]>();
+        //    String line;
+        //    List<char[]> level = new List<char[]>();
 
-            FileStream fsSource = new FileStream(puzzleDifficulty + ".txt", FileMode.OpenOrCreate, FileAccess.Read);
-            using (StreamReader sr = new StreamReader(fsSource))
-            {
-                int randomNumber = r.Next(0, 21);
+        //    FileStream fsSource = new FileStream(puzzleDifficulty + ".txt", FileMode.OpenOrCreate, FileAccess.Read);
+        //    using (StreamReader sr = new StreamReader(fsSource))
+        //    {
+        //        int randomNumber = r.Next(0, 21);
 
-                // Skip to random puzzle #0-21
-                for (int i = 0; i < randomNumber*11; i++)
-                {
-                    line = sr.ReadLine();
-                }
+        //        // Skip to random puzzle #0-21
+        //        for (int i = 0; i < randomNumber*11; i++)
+        //        {
+        //            line = sr.ReadLine();
+        //        }
 
-                for (int i = 0; i < 9; i++)
-                {
-                    line = sr.ReadLine();
+        //        for (int i = 0; i < 9; i++)
+        //        {
+        //            line = sr.ReadLine();
 
-                    for (int j = 0; j < 9; j++)
-                    {
-                        if (line[j] != '.')
-                        {
-                            grid[i, j].number = (int)char.GetNumericValue(line[j]);
-                            grid[i, j].revealed = true;
-                            grid[i, j].validNumber = true;
-                            correctBlocks++;
-                        }
-                        else
-                        {
-                            grid[i, j].number = 0;
-                            grid[i, j].revealed = false;
-                            grid[i, j].validNumber = false;
-                        }
-                    }
-                }
-            }
-        }
+        //            for (int j = 0; j < 9; j++)
+        //            {
+        //                if (line[j] != '.')
+        //                {
+        //                    grid[i, j].number = (int)char.GetNumericValue(line[j]);
+        //                    grid[i, j].revealed = true;
+        //                    grid[i, j].validNumber = true;
+        //                    correctBlocks++;
+        //                }
+        //                else
+        //                {
+        //                    grid[i, j].number = 0;
+        //                    grid[i, j].revealed = false;
+        //                    grid[i, j].validNumber = false;
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
         public void ValidOrInvalidNumber(int _x, int _y)
         {
@@ -359,6 +402,7 @@ namespace Sudoku_CS
             FileStream fsSource = new FileStream("savedBoard.txt", FileMode.OpenOrCreate, FileAccess.Read);
             using (StreamReader sr = new StreamReader(fsSource))
             {
+                puzzleSource = sr.ReadLine();
                 puzzleDifficulty = sr.ReadLine();
                 timer = float.Parse(sr.ReadLine());
 
@@ -512,6 +556,7 @@ namespace Sudoku_CS
         {
             StreamWriter sw = new StreamWriter("savedBoard.txt");  //FileStream("savedBoard.txt", FileMode.Open, FileAccess.Write);
 
+            sw.WriteLine(puzzleSource);
             sw.WriteLine(puzzleDifficulty);
             sw.WriteLine(timer);
 

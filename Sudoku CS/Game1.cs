@@ -9,7 +9,7 @@ namespace Sudoku_CS
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        public static int screenWidth = 1000;
+        public static int screenWidth = 875;
         public static int screenHeight = 850;
 
 
