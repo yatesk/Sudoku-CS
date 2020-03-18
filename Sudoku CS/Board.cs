@@ -144,7 +144,7 @@ namespace Sudoku_CS
 
                 savePuzzleButton = new Button("save", new Vector2(700, 0), content, false);
                 pauseButton = new Button("pause", new Vector2(455, 4), content);
-                showCandidatesButton = new Button("showCandidate", new Vector2(950, 50), content, true);
+                showCandidatesButton = new Button("showCandidate", new Vector2(775, 0), content, true);
 
                 LoadContent();
                 LoadBoardFromSavedTextfile();
@@ -249,8 +249,8 @@ namespace Sudoku_CS
             // checks to see if player won
             if (correctBlocks == 81)
             {
-                spriteBatch.DrawString(Block.numberFont, "YOU", new Vector2(800, 400), Color.Black);
-                spriteBatch.DrawString(Block.numberFont, "WON", new Vector2(800, 475), Color.Black);
+                spriteBatch.DrawString(Block.numberFont, "YOU", new Vector2(400, 400), Color.Black);
+                spriteBatch.DrawString(Block.numberFont, "WON", new Vector2(400, 475), Color.Black);
             }
 
             spriteBatch.DrawString(Block.candidateFont, puzzleDifficulty, new Vector2(boardMargin, 0), Color.Black);
