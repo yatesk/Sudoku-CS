@@ -38,6 +38,7 @@ namespace Sudoku_CS
         public Button savePuzzleButton;
 
         public Button highlightNakedSinglesButton;
+        public Button highlightHiddenSinglesButton;
 
         public string puzzleSource;
         public string puzzleDifficulty;
@@ -94,7 +95,8 @@ namespace Sudoku_CS
             pauseButton = new Button("pause", new Vector2(455, 4), content);
             showCandidatesButton = new Button("showCandidate", new Vector2(775, 0), content, true);
 
-            highlightNakedSinglesButton = new Button("highlightNakedSingles", new Vector2(625, 0), content, true);
+            highlightHiddenSinglesButton = new Button("highlightHiddenSingles", new Vector2(575, 0), content, true);
+            highlightNakedSinglesButton = new Button("highlightNakedSingles", new Vector2(650, 0), content, true);
 
             NewPuzzle();
             LoadContent();
@@ -151,6 +153,7 @@ namespace Sudoku_CS
                 showCandidatesButton = new Button("showCandidate", new Vector2(775, 0), content, true);
 
                 highlightNakedSinglesButton = new Button("highlightNakedSingles", new Vector2(625, 0), content, true);
+                highlightHiddenSinglesButton = new Button("highlightHiddenSingles", new Vector2(550, 0), content, true);
 
                 LoadContent();
                 LoadBoardFromSavedTextfile();
@@ -218,6 +221,7 @@ namespace Sudoku_CS
         {
             if (!isPaused && correctBlocks != 81)
                 timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -242,6 +246,9 @@ namespace Sudoku_CS
 
             if (highlightNakedSinglesButton.toggle)
                 HighlightNakedSingles(spriteBatch);
+
+            if (highlightHiddenSinglesButton.toggle)
+                HighlightHiddenSingles(spriteBatch);
 
             //// Draw timer
             int time = (int)timer;
@@ -271,6 +278,7 @@ namespace Sudoku_CS
             showCandidatesButton.Draw(spriteBatch);
 
             highlightNakedSinglesButton.Draw(spriteBatch);
+            highlightHiddenSinglesButton.Draw(spriteBatch);
         }
 
         public void ClearBoard()
@@ -279,6 +287,7 @@ namespace Sudoku_CS
             correctBlocks = 0;
             showCandidatesButton.toggle = false;
             highlightNakedSinglesButton.toggle = false;
+            highlightHiddenSinglesButton.toggle = false;
 
             for (int i = 0; i < 9; i++)
             {
@@ -364,7 +373,7 @@ namespace Sudoku_CS
 
             //if (highlightSinglesButton.toggle)
             //    HighlightSingles();
-            
+
         }
 
         public void LoadBoardFromSavedTextfile()
@@ -458,6 +467,7 @@ namespace Sudoku_CS
                     }
                 }
             }
+
         }
 
         public void HighlightNakedSingles(SpriteBatch spriteBatch)
@@ -468,32 +478,95 @@ namespace Sudoku_CS
                 {
                     if (grid[i, j].candidates.Count == 1 && grid[i, j].number == 0)
                     {
-
                         spriteBatch.DrawString(Block.candidateFont, grid[i, j].candidates[0].ToString(), new Vector2(grid[i, j].position.X + 5 + (((grid[i, j].candidates[0] - 1) % 3) * 30), grid[i, j].position.Y + ((grid[i, j].candidates[0] - 1) / 3) * 30), Color.Red);
-
-                        
                     }
                 }
             }
         }
 
-        // NOT FINISHED
-        //public void HighlightHiddenSingles(SpriteBatch spriteBatch)
-        //{
-        //    for (int i = 0; i < 9; i++)
-        //    {
-        //        for (int j = 0; j < 9; j++)
-        //        {
-        //            if (grid[i, j].candidates.Count == 1 && grid[i, j].number == 0)
-        //            {
-
-        //                spriteBatch.DrawString(Block.candidateFont, grid[i, j].candidates[0].ToString(), new Vector2(grid[i, j].position.X + 5 + (((grid[i, j].candidates[0] - 1) % 3) * 30), grid[i, j].position.Y + ((grid[i, j].candidates[0] - 1) / 3) * 30), Color.Red);
+        // Refactor
+        public void HighlightHiddenSingles(SpriteBatch spriteBatch)
+        {
 
 
-        //            }
-        //        }
-        //    }
-        //}
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    int[] totalCandidates = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+                    for (int column = 0; column < 9; column++)
+                    {
+                        if (grid[column, j].number == 0)
+                        {
+                            foreach (int candidate in grid[column, j].candidates)
+                            {
+                                totalCandidates[candidate] += 1;
+                            }
+                        }
+                    }
+
+                    // DRAW
+                    for (int k = 1; k < 10; k++)
+                    {
+                        if (totalCandidates[k] == 1 && grid[i, j].number == 0 && grid[i, j].candidates.Contains(k))
+                        {
+                            spriteBatch.DrawString(Block.candidateFont, k.ToString(), new Vector2(grid[i, j].position.X + 5 + (((k - 1) % 3) * 30), grid[i, j].position.Y + ((k - 1) / 3) * 30), Color.Red);
+                        }
+                    }
+
+                    Array.Clear(totalCandidates, 0, totalCandidates.Length);
+
+                    for (int row = 0; row < 9; row++)
+                    {
+                        if (grid[i, row].number == 0)
+                        {
+                            foreach (int candidate in grid[i, row].candidates)
+                            {
+                                totalCandidates[candidate] += 1;
+                            }
+                        }
+                    }
+
+                    // DRAW
+                    for (int k = 1; k < 10; k++)
+                    {
+                        if (totalCandidates[k] == 1 && grid[i, j].number == 0 && grid[i, j].candidates.Contains(k))
+                        {
+                            spriteBatch.DrawString(Block.candidateFont, k.ToString(), new Vector2(grid[i, j].position.X + 5 + (((k - 1) % 3) * 30), grid[i, j].position.Y + ((k - 1) / 3) * 30), Color.Red);
+                        }
+                    }
+
+                    Array.Clear(totalCandidates, 0, totalCandidates.Length);
+
+                    int[] subGridStartingCoords = FindSubGrid(i, j);
+
+                    for (int column = 0; column < 3; column++)
+                    {
+                        for (int row = 0; row < 3; row++)
+                        {
+                            if (grid[column + subGridStartingCoords[0], row + subGridStartingCoords[1]].number == 0)
+                            {
+                                foreach (int candidate in grid[column + subGridStartingCoords[0], row + subGridStartingCoords[1]].candidates)
+                                {
+                                    totalCandidates[candidate] += 1;
+                                }
+                            }
+                        }
+                    }
+
+                    // DRAW
+                    for (int k = 1; k < 10; k++)
+                    {
+                        if (totalCandidates[k] == 1 && grid[i, j].number == 0 && grid[i, j].candidates.Contains(k))
+                        {
+                            spriteBatch.DrawString(Block.candidateFont, k.ToString(), new Vector2(grid[i, j].position.X + 5 + (((k - 1) % 3) * 30), grid[i, j].position.Y + ((k - 1) / 3) * 30), Color.Red);
+                        }
+                    }
+                }
+            }
+        }
+
 
 
 

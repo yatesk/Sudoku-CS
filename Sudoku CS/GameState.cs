@@ -86,6 +86,12 @@ namespace Sudoku_CS
                     int i = 4;
 
                 }
+                else if (board.highlightHiddenSinglesButton.Clicked(mouseInput.getMouseX(), mouseInput.getMouseY()))
+                {
+                    // refactor
+                    int i = 4;
+
+                }
                 else if (board.savePuzzleButton.Clicked(mouseInput.getMouseX(), mouseInput.getMouseY()))
                 {
                     board.SaveBoard();
