@@ -80,6 +80,12 @@ namespace Sudoku_CS
                     board.ShowCandidates();
 
                 }
+                else if (board.highlightNakedSinglesButton.Clicked(mouseInput.getMouseX(), mouseInput.getMouseY()))
+                {
+                    // refactor
+                    int i = 4;
+
+                }
                 else if (board.savePuzzleButton.Clicked(mouseInput.getMouseX(), mouseInput.getMouseY()))
                 {
                     board.SaveBoard();

@@ -8,7 +8,7 @@ namespace Sudoku_CS
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        public static SpriteBatch spriteBatch;
         public static int screenWidth = 875;
         public static int screenHeight = 850;
 
@@ -46,8 +46,6 @@ namespace Sudoku_CS
         /// </summary>
         protected override void LoadContent()
         {
-            
-
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             state = new MenuState(this, Content);
@@ -82,11 +80,6 @@ namespace Sudoku_CS
             state.Update(gameTime);
 
             base.Update(gameTime);
-
-
-
-            
-            //base.Update(gameTime);
         }
 
         /// <summary>
@@ -97,8 +90,6 @@ namespace Sudoku_CS
         {
             GraphicsDevice.Clear(Color.MediumSeaGreen);
             spriteBatch.Begin();
-
-           
 
             state.Draw(gameTime, spriteBatch);
 

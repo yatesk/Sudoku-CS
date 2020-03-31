@@ -37,6 +37,8 @@ namespace Sudoku_CS
 
         public Button savePuzzleButton;
 
+        public Button highlightNakedSinglesButton;
+
         public string puzzleSource;
         public string puzzleDifficulty;
 
@@ -88,9 +90,11 @@ namespace Sudoku_CS
                 }
             }
 
-            savePuzzleButton = new Button("save", new Vector2(700, 0), content, false);
+            savePuzzleButton = new Button("save", new Vector2(500, 0), content, false);
             pauseButton = new Button("pause", new Vector2(455, 4), content);
             showCandidatesButton = new Button("showCandidate", new Vector2(775, 0), content, true);
+
+            highlightNakedSinglesButton = new Button("highlightNakedSingles", new Vector2(625, 0), content, true);
 
             NewPuzzle();
             LoadContent();
@@ -142,9 +146,11 @@ namespace Sudoku_CS
                     }
                 }
 
-                savePuzzleButton = new Button("save", new Vector2(700, 0), content, false);
+                savePuzzleButton = new Button("save", new Vector2(500, 0), content, false);
                 pauseButton = new Button("pause", new Vector2(455, 4), content);
                 showCandidatesButton = new Button("showCandidate", new Vector2(775, 0), content, true);
+
+                highlightNakedSinglesButton = new Button("highlightNakedSingles", new Vector2(625, 0), content, true);
 
                 LoadContent();
                 LoadBoardFromSavedTextfile();
@@ -234,6 +240,9 @@ namespace Sudoku_CS
                 spriteBatch.DrawString(Block.numberFont, "PAUSED", new Vector2(x, y), Color.Black);
             }
 
+            if (highlightNakedSinglesButton.toggle)
+                HighlightNakedSingles(spriteBatch);
+
             //// Draw timer
             int time = (int)timer;
            
@@ -260,6 +269,8 @@ namespace Sudoku_CS
 
             savePuzzleButton.Draw(spriteBatch);
             showCandidatesButton.Draw(spriteBatch);
+
+            highlightNakedSinglesButton.Draw(spriteBatch);
         }
 
         public void ClearBoard()
@@ -267,6 +278,7 @@ namespace Sudoku_CS
             timer = 0f;
             correctBlocks = 0;
             showCandidatesButton.toggle = false;
+            highlightNakedSinglesButton.toggle = false;
 
             for (int i = 0; i < 9; i++)
             {
@@ -279,48 +291,6 @@ namespace Sudoku_CS
                 }
             }
         }
-
-        //public void NewPuzzle()
-        //{
-        //    ClearBoard();
-
-        //    String line;
-        //    List<char[]> level = new List<char[]>();
-
-        //    FileStream fsSource = new FileStream(puzzleDifficulty + ".txt", FileMode.OpenOrCreate, FileAccess.Read);
-        //    using (StreamReader sr = new StreamReader(fsSource))
-        //    {
-        //        int randomNumber = r.Next(0, 21);
-
-        //        // Skip to random puzzle #0-21
-        //        for (int i = 0; i < randomNumber*11; i++)
-        //        {
-        //            line = sr.ReadLine();
-        //        }
-
-        //        for (int i = 0; i < 9; i++)
-        //        {
-        //            line = sr.ReadLine();
-
-        //            for (int j = 0; j < 9; j++)
-        //            {
-        //                if (line[j] != '.')
-        //                {
-        //                    grid[i, j].number = (int)char.GetNumericValue(line[j]);
-        //                    grid[i, j].revealed = true;
-        //                    grid[i, j].validNumber = true;
-        //                    correctBlocks++;
-        //                }
-        //                else
-        //                {
-        //                    grid[i, j].number = 0;
-        //                    grid[i, j].revealed = false;
-        //                    grid[i, j].validNumber = false;
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
 
         public void ValidOrInvalidNumber(int _x, int _y)
         {
@@ -391,6 +361,9 @@ namespace Sudoku_CS
             // MOVE???
             if (showCandidatesButton.toggle)
                 ShowCandidates();
+
+            //if (highlightSinglesButton.toggle)
+            //    HighlightSingles();
             
         }
 
@@ -487,6 +460,40 @@ namespace Sudoku_CS
             }
         }
 
+        public void HighlightNakedSingles(SpriteBatch spriteBatch)
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    if (grid[i, j].candidates.Count == 1 && grid[i, j].number == 0)
+                    {
+
+                        spriteBatch.DrawString(Block.candidateFont, grid[i, j].candidates[0].ToString(), new Vector2(grid[i, j].position.X + 5 + (((grid[i, j].candidates[0] - 1) % 3) * 30), grid[i, j].position.Y + ((grid[i, j].candidates[0] - 1) / 3) * 30), Color.Red);
+
+                        
+                    }
+                }
+            }
+        }
+
+        // NOT FINISHED
+        //public void HighlightHiddenSingles(SpriteBatch spriteBatch)
+        //{
+        //    for (int i = 0; i < 9; i++)
+        //    {
+        //        for (int j = 0; j < 9; j++)
+        //        {
+        //            if (grid[i, j].candidates.Count == 1 && grid[i, j].number == 0)
+        //            {
+
+        //                spriteBatch.DrawString(Block.candidateFont, grid[i, j].candidates[0].ToString(), new Vector2(grid[i, j].position.X + 5 + (((grid[i, j].candidates[0] - 1) % 3) * 30), grid[i, j].position.Y + ((grid[i, j].candidates[0] - 1) / 3) * 30), Color.Red);
+
+
+        //            }
+        //        }
+        //    }
+        //}
 
 
 
