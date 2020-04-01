@@ -96,6 +96,19 @@ namespace Sudoku_CS
                 {
                     board.SaveBoard();
                 }
+                // Winning game screen.
+                else if (board.newPuzzleButton.Clicked(mouseInput.getMouseX(), mouseInput.getMouseY()) && board.showWinningScreen)
+                {
+                    game.ChangeState(new NewPuzzleState(game, content));
+                }
+                else if (board.quitButton.Clicked(mouseInput.getMouseX(), mouseInput.getMouseY()) && board.showWinningScreen)
+                {
+                    game.Exit();
+                }
+                else if (board.closeWinningScreenButton.Clicked(mouseInput.getMouseX(), mouseInput.getMouseY()) && board.showWinningScreen)
+                {
+                    board.showWinningScreen = false;
+                }
 
 
                 clickedBlock = Block.WhichBlock(mouseInput.getMouseX(), mouseInput.getMouseY());

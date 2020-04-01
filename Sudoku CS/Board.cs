@@ -29,8 +29,7 @@ namespace Sudoku_CS
         public bool newPuzzle = false;
         public bool newNYTimesPuzzle = false;
 
-        public Button newPuzzleButton;
-        public Button nyTimesButton;
+        public bool showWinningScreen = false;
 
         public Button pauseButton;
         public Button showCandidatesButton;
@@ -42,6 +41,11 @@ namespace Sudoku_CS
 
         public string puzzleSource;
         public string puzzleDifficulty;
+
+        // Winning screen buttons.
+        public Button newPuzzleButton;
+        public Button quitButton;
+        public Button closeWinningScreenButton;
 
         public Board(ContentManager _content, string _source = "", string _difficulty = "")
         {
@@ -97,6 +101,11 @@ namespace Sudoku_CS
 
             highlightHiddenSinglesButton = new Button("highlightHiddenSingles", new Vector2(575, 0), content, true);
             highlightNakedSinglesButton = new Button("highlightNakedSingles", new Vector2(650, 0), content, true);
+
+            // Winning screen buttons
+            newPuzzleButton = new Button("basic150-50", "candidateFont", new Vector2((Game1.screenWidth / 2) - 75, (Game1.screenHeight / 2) + 60), "New Puzzle?", Color.Black, content);
+            quitButton = new Button("basic150-50", "candidateFont", new Vector2((Game1.screenWidth / 2) - 75, (Game1.screenHeight / 2) + 135), "Quit", Color.Black, content);
+            closeWinningScreenButton = new Button("close", new Vector2(613, 230), content);
 
             NewPuzzle();
             LoadContent();
@@ -154,6 +163,11 @@ namespace Sudoku_CS
 
                 highlightNakedSinglesButton = new Button("highlightNakedSingles", new Vector2(625, 0), content, true);
                 highlightHiddenSinglesButton = new Button("highlightHiddenSingles", new Vector2(550, 0), content, true);
+
+                // Winning screen buttons
+                newPuzzleButton = new Button("basic150-50", "candidateFont", new Vector2((Game1.screenWidth / 2) - 75, (Game1.screenHeight / 2) + 60), "New Puzzle?", Color.Black, content);
+                quitButton = new Button("basic150-50", "candidateFont", new Vector2((Game1.screenWidth / 2) - 75, (Game1.screenHeight / 2) + 135), "Quit", Color.Black, content);
+                closeWinningScreenButton = new Button("close", new Vector2(613, 230), content);
 
                 LoadContent();
                 LoadBoardFromSavedTextfile();
@@ -244,6 +258,11 @@ namespace Sudoku_CS
                 spriteBatch.DrawString(Block.numberFont, "PAUSED", new Vector2(x, y), Color.Black);
             }
 
+            if (showWinningScreen)
+            {
+                WinningScreen(Game1.spriteBatch);
+            }
+
             if (highlightNakedSinglesButton.toggle)
                 HighlightNakedSingles(spriteBatch);
 
@@ -263,11 +282,15 @@ namespace Sudoku_CS
             }
 
             // checks to see if player won
-            if (correctBlocks == 81)
-            {
-                spriteBatch.DrawString(Block.numberFont, "YOU", new Vector2(400, 400), Color.Black);
-                spriteBatch.DrawString(Block.numberFont, "WON", new Vector2(400, 475), Color.Black);
-            }
+            //if (correctBlocks == 81)
+            //{
+            //    showWinningScreen = true;
+            //    WinningScreen(spriteBatch);
+            //    //spriteBatch.DrawString(Block.numberFont, "YOU", new Vector2(400, 400), Color.Black);
+            //    //spriteBatch.DrawString(Block.numberFont, "WON", new Vector2(400, 475), Color.Black);
+            //}
+            //else
+            //    showWinningScreen = false;
 
             spriteBatch.DrawString(Block.candidateFont, puzzleDifficulty, new Vector2(boardMargin, 0), Color.Black);
             spriteBatch.DrawString(Block.candidateFont, puzzleSource, new Vector2(boardMargin + 150, 0), Color.Black);
@@ -281,6 +304,36 @@ namespace Sudoku_CS
             highlightHiddenSinglesButton.Draw(spriteBatch);
         }
 
+        public void WinningScreen(SpriteBatch spriteBatch)
+        {
+            Texture2D texture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+            texture.SetData<Color>(new Color[] { Color.White });
+
+            spriteBatch.Draw(texture, new Rectangle(232, 232, 400, 400), Color.White);
+
+
+            spriteBatch.DrawString(Block.numberFont, "Congrats!", new Vector2(250, 250), Color.Black);
+            spriteBatch.DrawString(Block.candidateFont, "You finished a " + puzzleSource + " " + puzzleDifficulty + " puzzle in", new Vector2(250, 390), Color.Black);
+
+
+            int time = (int)timer;
+
+            if (time % 60 < 10)
+            {
+                spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":0" + (time % 60).ToString(), new Vector2(420, 430), Color.Black);
+            }
+            else
+            {
+                spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":" + (time % 60).ToString(), new Vector2(420, 430), Color.Black);
+            }
+
+
+            newPuzzleButton.Draw(spriteBatch);
+            quitButton.Draw(spriteBatch);
+            closeWinningScreenButton.Draw(spriteBatch);
+
+    }
+
         public void ClearBoard()
         {
             timer = 0f;
@@ -288,6 +341,7 @@ namespace Sudoku_CS
             showCandidatesButton.toggle = false;
             highlightNakedSinglesButton.toggle = false;
             highlightHiddenSinglesButton.toggle = false;
+            showWinningScreen = false;
 
             for (int i = 0; i < 9; i++)
             {
@@ -366,6 +420,21 @@ namespace Sudoku_CS
                     grid[_x, _y].validNumber = true;
                 }
             }
+
+            // better place? refactor
+            if (valid)
+            {
+                if (correctBlocks == 81)
+                {
+                    showWinningScreen = true;
+                    
+                    //spriteBatch.DrawString(Block.numberFont, "YOU", new Vector2(400, 400), Color.Black);
+                    //spriteBatch.DrawString(Block.numberFont, "WON", new Vector2(400, 475), Color.Black);
+                }
+                else
+                    showWinningScreen = false;
+            }
+
 
             // MOVE???
             if (showCandidatesButton.toggle)
