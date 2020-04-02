@@ -1,11 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Audio;
 using System;
-
 
 namespace Sudoku_CS
 {
@@ -15,30 +12,22 @@ namespace Sudoku_CS
         private Board board;
         private Tuple<int, int> clickedBlock;
 
-
         public GameState(Game1 game, ContentManager content, string puzzleSource, string puzzleDifficulty) : base(game, content)
         {
-
             clickedBlock = new Tuple<int, int>(-1, -1);
             mouseInput = new MouseInput(Mouse.GetState());
 
-
             board = new Board(content, puzzleSource, puzzleDifficulty);
-
 
             LoadContent();
         }
 
-
         public GameState(Game1 game, ContentManager content, string savedGame) : base(game, content)
         {
-
             clickedBlock = new Tuple<int, int>(-1, -1);
             mouseInput = new MouseInput(Mouse.GetState());
 
-
             board = new Board(content, savedGame);
-
 
             LoadContent();
         }
@@ -47,7 +36,6 @@ namespace Sudoku_CS
         public override void LoadContent()
         {       
         }
-
 
         public override void Update(GameTime gameTime)
         {
@@ -84,13 +72,11 @@ namespace Sudoku_CS
                 {
                     // refactor
                     int i = 4;
-
                 }
                 else if (board.highlightHiddenSinglesButton.Clicked(mouseInput.getMouseX(), mouseInput.getMouseY()))
                 {
                     // refactor
                     int i = 4;
-
                 }
                 else if (board.savePuzzleButton.Clicked(mouseInput.getMouseX(), mouseInput.getMouseY()))
                 {
@@ -109,7 +95,6 @@ namespace Sudoku_CS
                 {
                     board.showWinningScreen = false;
                 }
-
 
                 clickedBlock = Block.WhichBlock(mouseInput.getMouseX(), mouseInput.getMouseY());
 
@@ -139,4 +124,3 @@ namespace Sudoku_CS
         }
     }
 }
-

@@ -21,8 +21,6 @@ namespace Sudoku_CS
         private Texture2D backgroundImage;
         private Vector2 backgroundPosition;
 
-        private Texture2D difficultiesImage;
-
         private float timer = 0f;
         public bool isPaused = false;
 
@@ -90,7 +88,6 @@ namespace Sudoku_CS
                         gridMarginY += (3 * j) + 6;
                     }
 
-                    System.Diagnostics.Debug.WriteLine((i*84) + boardMargin + gridMarginX);
                     grid[i, j] = new Block(new Vector2((i * 84) + boardMargin + gridMarginX, boardMargin + (j * 84) + gridMarginY), false, 0);
                 }
             }
@@ -226,7 +223,6 @@ namespace Sudoku_CS
         public void LoadContent()
         {
             backgroundImage = content.Load<Texture2D>("background");
-            difficultiesImage = content.Load<Texture2D>("difficulties");
 
             Block.LoadContent();
         }
@@ -235,7 +231,6 @@ namespace Sudoku_CS
         {
             if (!isPaused && correctBlocks != 81)
                 timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -273,24 +268,9 @@ namespace Sudoku_CS
             int time = (int)timer;
            
             if (time % 60 < 10)
-            {
                 spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":0" + (time % 60).ToString(), new Vector2(405, 0), Color.Black);
-            }
             else
-            {
                 spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":" + (time % 60).ToString(), new Vector2(405, 0), Color.Black);
-            }
-
-            // checks to see if player won
-            //if (correctBlocks == 81)
-            //{
-            //    showWinningScreen = true;
-            //    WinningScreen(spriteBatch);
-            //    //spriteBatch.DrawString(Block.numberFont, "YOU", new Vector2(400, 400), Color.Black);
-            //    //spriteBatch.DrawString(Block.numberFont, "WON", new Vector2(400, 475), Color.Black);
-            //}
-            //else
-            //    showWinningScreen = false;
 
             spriteBatch.DrawString(Block.candidateFont, puzzleDifficulty, new Vector2(boardMargin, 0), Color.Black);
             spriteBatch.DrawString(Block.candidateFont, puzzleSource, new Vector2(boardMargin + 150, 0), Color.Black);
@@ -304,34 +284,27 @@ namespace Sudoku_CS
             highlightHiddenSinglesButton.Draw(spriteBatch);
         }
 
+        // refactor
         public void WinningScreen(SpriteBatch spriteBatch)
         {
+            // Draw white box
             Texture2D texture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
             texture.SetData<Color>(new Color[] { Color.White });
-
             spriteBatch.Draw(texture, new Rectangle(232, 232, 400, 400), Color.White);
-
 
             spriteBatch.DrawString(Block.numberFont, "Congrats!", new Vector2(250, 250), Color.Black);
             spriteBatch.DrawString(Block.candidateFont, "You finished a " + puzzleSource + " " + puzzleDifficulty + " puzzle in", new Vector2(250, 390), Color.Black);
 
-
             int time = (int)timer;
 
             if (time % 60 < 10)
-            {
                 spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":0" + (time % 60).ToString(), new Vector2(420, 430), Color.Black);
-            }
             else
-            {
                 spriteBatch.DrawString(Block.candidateFont, (time / 60).ToString() + ":" + (time % 60).ToString(), new Vector2(420, 430), Color.Black);
-            }
-
 
             newPuzzleButton.Draw(spriteBatch);
             quitButton.Draw(spriteBatch);
             closeWinningScreenButton.Draw(spriteBatch);
-
     }
 
         public void ClearBoard()
@@ -378,9 +351,7 @@ namespace Sudoku_CS
             for (int i = 0; i < 9; i++)
             {
                 if (grid[_x, i].number == grid[_x, _y].number)
-                {
                     count++;
-                }
             }
 
             if (count != 1)
@@ -395,9 +366,7 @@ namespace Sudoku_CS
                 for (int j = 0; j < 3; j++)
                 {
                     if (grid[i + subGridStartingCoords[0], j + subGridStartingCoords[1]].number == grid[_x, _y].number)
-                    {
                         count++;
-                    }
                 }
             }
 
@@ -408,8 +377,8 @@ namespace Sudoku_CS
             {
                 if (!valid)
                 { 
-                correctBlocks--;
-                grid[_x, _y].validNumber = false;
+                    correctBlocks--;
+                    grid[_x, _y].validNumber = false;
                 }
             }
             else
@@ -425,24 +394,14 @@ namespace Sudoku_CS
             if (valid)
             {
                 if (correctBlocks == 81)
-                {
                     showWinningScreen = true;
-                    
-                    //spriteBatch.DrawString(Block.numberFont, "YOU", new Vector2(400, 400), Color.Black);
-                    //spriteBatch.DrawString(Block.numberFont, "WON", new Vector2(400, 475), Color.Black);
-                }
                 else
                     showWinningScreen = false;
             }
 
-
             // MOVE???
             if (showCandidatesButton.toggle)
                 ShowCandidates();
-
-            //if (highlightSinglesButton.toggle)
-            //    HighlightSingles();
-
         }
 
         public void LoadBoardFromSavedTextfile()
@@ -536,7 +495,6 @@ namespace Sudoku_CS
                     }
                 }
             }
-
         }
 
         public void HighlightNakedSingles(SpriteBatch spriteBatch)
@@ -546,9 +504,7 @@ namespace Sudoku_CS
                 for (int j = 0; j < 9; j++)
                 {
                     if (grid[i, j].candidates.Count == 1 && grid[i, j].number == 0)
-                    {
                         spriteBatch.DrawString(Block.candidateFont, grid[i, j].candidates[0].ToString(), new Vector2(grid[i, j].position.X + 5 + (((grid[i, j].candidates[0] - 1) % 3) * 30), grid[i, j].position.Y + ((grid[i, j].candidates[0] - 1) / 3) * 30), Color.Red);
-                    }
                 }
             }
         }
@@ -556,8 +512,6 @@ namespace Sudoku_CS
         // Refactor
         public void HighlightHiddenSingles(SpriteBatch spriteBatch)
         {
-
-
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
@@ -569,9 +523,7 @@ namespace Sudoku_CS
                         if (grid[column, j].number == 0)
                         {
                             foreach (int candidate in grid[column, j].candidates)
-                            {
                                 totalCandidates[candidate] += 1;
-                            }
                         }
                     }
 
@@ -579,9 +531,7 @@ namespace Sudoku_CS
                     for (int k = 1; k < 10; k++)
                     {
                         if (totalCandidates[k] == 1 && grid[i, j].number == 0 && grid[i, j].candidates.Contains(k))
-                        {
                             spriteBatch.DrawString(Block.candidateFont, k.ToString(), new Vector2(grid[i, j].position.X + 5 + (((k - 1) % 3) * 30), grid[i, j].position.Y + ((k - 1) / 3) * 30), Color.Red);
-                        }
                     }
 
                     Array.Clear(totalCandidates, 0, totalCandidates.Length);
@@ -591,9 +541,7 @@ namespace Sudoku_CS
                         if (grid[i, row].number == 0)
                         {
                             foreach (int candidate in grid[i, row].candidates)
-                            {
                                 totalCandidates[candidate] += 1;
-                            }
                         }
                     }
 
@@ -601,9 +549,7 @@ namespace Sudoku_CS
                     for (int k = 1; k < 10; k++)
                     {
                         if (totalCandidates[k] == 1 && grid[i, j].number == 0 && grid[i, j].candidates.Contains(k))
-                        {
                             spriteBatch.DrawString(Block.candidateFont, k.ToString(), new Vector2(grid[i, j].position.X + 5 + (((k - 1) % 3) * 30), grid[i, j].position.Y + ((k - 1) / 3) * 30), Color.Red);
-                        }
                     }
 
                     Array.Clear(totalCandidates, 0, totalCandidates.Length);
@@ -617,9 +563,7 @@ namespace Sudoku_CS
                             if (grid[column + subGridStartingCoords[0], row + subGridStartingCoords[1]].number == 0)
                             {
                                 foreach (int candidate in grid[column + subGridStartingCoords[0], row + subGridStartingCoords[1]].candidates)
-                                {
                                     totalCandidates[candidate] += 1;
-                                }
                             }
                         }
                     }
@@ -628,16 +572,11 @@ namespace Sudoku_CS
                     for (int k = 1; k < 10; k++)
                     {
                         if (totalCandidates[k] == 1 && grid[i, j].number == 0 && grid[i, j].candidates.Contains(k))
-                        {
                             spriteBatch.DrawString(Block.candidateFont, k.ToString(), new Vector2(grid[i, j].position.X + 5 + (((k - 1) % 3) * 30), grid[i, j].position.Y + ((k - 1) / 3) * 30), Color.Red);
-                        }
                     }
                 }
             }
         }
-
-
-
 
         public void GetNYTimesPuzzle()
         {
@@ -654,7 +593,6 @@ namespace Sudoku_CS
             int indexEasy = htmlCode.IndexOf("\"puzzle\":[");
             int indexHard = htmlCode.IndexOf("\"puzzle\":[", indexEasy + 161);
             int indexMedium = htmlCode.IndexOf("\"puzzle\":[", indexHard + 161);
-
 
             if (puzzleDifficulty == "Easy")
             {

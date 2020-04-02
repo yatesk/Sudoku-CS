@@ -16,11 +16,8 @@ namespace Sudoku_CS
         private SpriteFont titleFont;
         private SpriteFont labelFont;
 
-        private string title;
-
         public NewPuzzleState(Game1 game, ContentManager content) : base(game, content)
-        {
-            title = "New Puzzle";
+        { 
             LoadContent();
 
             previousMouseState = Mouse.GetState();
@@ -32,7 +29,6 @@ namespace Sudoku_CS
             titleFont = content.Load<SpriteFont>("titleFont");
             labelFont = content.Load<SpriteFont>("candidateFont");
 
-
             buttons = new List<Button>
             {
                 new Button("button250-100", "buttonFont", new Vector2((Game1.screenWidth / 2) - 275, (Game1.screenHeight / 2) - 75), "Easy", Color.Green, content),
@@ -43,7 +39,6 @@ namespace Sudoku_CS
                 new Button("button250-100", "buttonFont", new Vector2((Game1.screenWidth / 2) + 25, (Game1.screenHeight / 2) + 25), "Easy", Color.Blue, content),
                 new Button("button250-100", "buttonFont", new Vector2((Game1.screenWidth / 2) + 25, (Game1.screenHeight / 2) + 125), "Intermediate", Color.Orange, content),
                 new Button("button250-100", "buttonFont", new Vector2((Game1.screenWidth / 2) + 25, (Game1.screenHeight / 2) + 225), "Expert", Color.Red, content)
-
             };
         }
 
@@ -68,7 +63,6 @@ namespace Sudoku_CS
                                     game.ChangeState(new GameState(game, content, "NY Times", "Easy"));
                                 else if (button.getTextColor() == Color.Blue) // QQ Wing
                                     game.ChangeState(new GameState(game, content, "QQ Wing", "Easy"));
-                                
                                 break;
                             case "Medium":
                                 game.ChangeState(new GameState(game, content, "NY Times", "Medium"));
@@ -76,7 +70,6 @@ namespace Sudoku_CS
                             case "Hard":
                                 game.ChangeState(new GameState(game, content, "NY Times", "Hard"));
                                 break;
-
                             case "Simple":
                                 game.ChangeState(new GameState(game, content, "QQ Wing", "Simple"));
                                 break;
@@ -86,12 +79,6 @@ namespace Sudoku_CS
                             case "Expert":
                                 game.ChangeState(new GameState(game, content, "QQ Wing", "Expert"));
                                 break;
-
-
-                                //case "1player":
-                                //    game.ChangeState(new GameState(game, content));
-                                //    break;
-
                         }
                     }
                 }
@@ -99,14 +86,13 @@ namespace Sudoku_CS
             else
             {
                 foreach (var button in buttons)
-                {
                     button.Update(currentMouseState.X, currentMouseState.Y);
-                }
             }
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            string title = "New Puzzle";
             float x = Game1.screenWidth / 2 - (titleFont.MeasureString(title).X / 2);
 
             spriteBatch.DrawString(titleFont, title, new Vector2(x, 50), Color.Black);
@@ -114,15 +100,8 @@ namespace Sudoku_CS
             spriteBatch.DrawString(labelFont, "NY Times", new Vector2((Game1.screenWidth / 2) - 275, (Game1.screenHeight / 2) - 200), Color.Black);
             spriteBatch.DrawString(labelFont, "QQ Wing", new Vector2((Game1.screenWidth / 2) + 25, (Game1.screenHeight / 2) - 200), Color.Black);
 
-
-            //new Button("button250-100", "buttonFont", new Vector2((Game1.screenWidth / 2) - 275, (Game1.screenHeight / 2) - 200), "NY Times", Color.Black, content),
-                //new Button("button250-100", "buttonFont", new Vector2((Game1.screenWidth / 2) + 25, (Game1.screenHeight / 2) - 200), "QQ Wing", Color.Black, content),
-
-
             foreach (var button in buttons)
-            {
                 button.Draw(spriteBatch);
-            }
         }
     }
 }

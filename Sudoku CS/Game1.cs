@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System;
 
 namespace Sudoku_CS
 {
@@ -11,8 +9,6 @@ namespace Sudoku_CS
         public static SpriteBatch spriteBatch;
         public static int screenWidth = 875;
         public static int screenHeight = 850;
-
-
 
         private State state;
         private State nextState;
@@ -24,9 +20,7 @@ namespace Sudoku_CS
             graphics.PreferredBackBufferWidth = screenWidth;
             graphics.PreferredBackBufferHeight = screenHeight;
             this.Window.Title = "Sudoku";
-            this.IsMouseVisible = true;
-
-            
+            this.IsMouseVisible = true;            
         }
 
         /// <summary>
@@ -78,7 +72,6 @@ namespace Sudoku_CS
             }
 
             state.Update(gameTime);
-
             base.Update(gameTime);
         }
 

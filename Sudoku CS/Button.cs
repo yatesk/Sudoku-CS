@@ -17,7 +17,6 @@ namespace Sudoku_CS
         private bool mouseOver;
         private bool toggleable;
         public bool toggle;
-        public bool selected;
 
         public Button(string _textureName, string fontName, Vector2 _position, string _text, Color _textColor, ContentManager content)
         {
@@ -69,7 +68,7 @@ namespace Sudoku_CS
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (mouseOver || toggle || selected)
+            if (mouseOver || toggle)
             {
                 spriteBatch.Draw(texture, position, Color.Gray);
             }
